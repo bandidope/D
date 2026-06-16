@@ -121,7 +121,7 @@ var handler = async function (m, conn, db) {
                 body: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡',
                 previewType: "PHOTO",
                 thumbnailUrl: "https://qu.ax/QGAVS.jpg",
-                sourceUrl: "https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18",
+                sourceUrl: "https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m",
                 mediaType: 1,
                 renderLargerThumbnail: false
             }
