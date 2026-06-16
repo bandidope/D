@@ -17,7 +17,7 @@ export async function before(m, { conn, groupMetadata }) {
         participants: '0@s.whatsapp.net',
         remoteJid: 'status@broadcast',
         fromMe: false,
-        id: 'Pᴏᴡᴇʀᴇᴅ Bʏ Tᴇᴀᴍ Nɪɢʜᴛᴡɪsʜ 🌀'
+        id: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡'
       },
       message: {
         contactMessage: {
