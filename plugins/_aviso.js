@@ -4,8 +4,8 @@ import fetch from 'node-fetch' // Puedes quitarlo si no usas fetch en este archi
 const handler = async (m, { conn, text, command, usedPrefix}) => {
   // ✅ IDs de canales configurados
   const channelIds = [
-    '120363414007802886@newsletter',
-    '120363419364337473@newsletter'
+    '120363419947391620@newsletter',
+    '120363419947391620@newsletter'
   ]
 
   const message = text?.trim()

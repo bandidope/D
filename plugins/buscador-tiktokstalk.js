@@ -1,40 +1,53 @@
+// code creador por barboza 
+// Se te agradece que dejes mis créditos gracias disfruta el código
 
-var handler = async (m, { args, usedPrefix, command}) => {
-  const username = args[0];
-  if (!username) {
-    return m.reply(`❌ Debes proporcionar un nombre de usuario de TikTok.\nEjemplo: *${usedPrefix}${command} dev_diego_ofc*`);
+import axios from "axios"
+
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) return conn.reply(m.chat, `*🔍 DEBE INGRESAR UN USUARIO*\n\nUso: ${usedPrefix}${command} [username]\nEjemplo: ${usedPrefix}${command} twice_tiktok_official`, m)
+
+    await m.react('👤')
+
+    try {
+        const response = await axios.get(`https://api.delirius.store/tools/tiktokstalk?q=${encodeURIComponent(text)}`)
+        const res = response.data
+
+        if (!res.status) return m.reply('❌ No se encontró información del usuario.')
+
+        const { users, stats } = res.result
+        
+        let profile = `✨ *TIKTOK STALK* ✨\n`
+        profile += `\n*╭─── [ PERFIL ] ───*`
+        profile += `\n│ 🏷️ *Nombre:* ${users.nickname}`
+        profile += `\n│ 👤 *Usuario:* @${users.username}`
+        profile += `\n│ 🛡️ *Verificado:* ${users.verified ? 'Oficial' : 'No'}`
+        profile += `\n│ 📄 *Bio:* ${users.signature || 'Sin descripción'}`
+        profile += `\n*╰───────────────*\n`
+        profile += `\n*╭── [ ESTADÍSTICAS ] ──*`
+        profile += `\n│ 👥 *Seguidores:* ${stats.followerCount.toLocaleString()}`
+        profile += `\n│ 👣 *Siguiendo:* ${stats.followingCount.toLocaleString()}`
+        profile += `\n│ 💖 *Me gusta:* ${stats.heartCount.toLocaleString()}`
+        profile += `\n│ 🎥 *Videos:* ${stats.videoCount.toLocaleString()}`
+        profile += `\n*╰───────────────*\n`
+        profile += `\n🔗 *URL:* ${users.url}`
+        profile += `\n\n*By: Barboza Developer*`
+
+        await conn.sendMessage(m.chat, { 
+            image: { url: users.avatarLarger }, 
+            caption: profile 
+        }, { quoted: m })
+
+        await m.react('✅')
+
+    } catch (e) {
+        await m.react('❌')
+        console.error(e)
+        m.reply('⚠️ Ocurrió un error al consultar el perfil.')
+    }
 }
 
-  try {
-    const res = await fetch(`https://api.dorratz.com/v3/tiktok-stalk?username=${username}`);
-    const json = await res.json();
+handler.help = ['tiktokstalk']
+handler.tags = ['tools']
+handler.command = ['tiktokstalk', 'ttstalk','tiktokuser']
 
-    if (!json.objects ||!json.objects[0]) {
-      return m.reply(`⚠️ No se encontró información para el usuario: ${username}`);
-}
-
-    const userInfo = JSON.parse(json.objects[0].content).userInfo;
-
-    let info = `🎵 *Perfil TikTok: @${userInfo.username}*\n\n`;
-    info += `📛 Nombre: ${userInfo.nombre || 'No disponible'}\n`;
-    info += `📄 Bio: ${userInfo.bio || 'Sin descripción'}\n`;
-    info += `✅ Verificado: ${userInfo.verificado? 'Sí': 'No'}\n`;
-    info += `👥 Seguidores: ${userInfo.seguidoresTotales}\n`;
-    info += `👣 Siguiendo: ${userInfo.siguiendoTotal}\n`;
-    info += `❤️ Me gusta: ${userInfo.meGustaTotales}\n`;
-    info += `🎬 Videos: ${userInfo.videosTotales}\n`;
-    info += `🤝 Amigos: ${userInfo.amigosTotales}\n`;
-    info += `📷 Avatar: ${userInfo.avatar}`;
-
-    m.reply(info);
-} catch (e) {
-    console.error(e);
-    m.reply('❌ Error al obtener datos. Intenta nuevamente más tarde.');
-}
-};
-
-handler.help = ['tiktokstalk <usuario>'];
-handler.tags = ['info'];
-handler.command = ['tiktokstalk'];
-
-export default handler;
+export default handler

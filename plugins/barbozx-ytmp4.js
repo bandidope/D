@@ -1,35 +1,54 @@
-import fetch from 'node-fetch'
+/**
+ * 📂 COMANDO: ytmp4
+ * 📝 DESCRIPCIÓN: Descarga videos de YouTube en formato MP4.
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ */
 
-const handler = async (m, { conn, text, usedPrefix, command}) => {
-  try {
-    if (!text) return conn.reply(m.chat, '💥 Por favor, proporciona un enlace de YouTube.', m)
-    await m.react('🕒')
+import axios from 'axios'
 
-    const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    const match = text.match(ytRegex)
-    if (!match) throw '⚠ Enlace de YouTube no válido.'
+var handler = async (m, { conn, text, usedPrefix, command }) => {
+    let query = text ? text.trim() : (m.quoted?.text || null)
+    if (!query) return conn.reply(m.chat, `✨ *¿Qué video de YouTube deseas descargar?*\n\n> *Ejemplo:* ${usedPrefix + command} https://www.youtube.com/watch?v=5M_n2UCe7DQ`, m)
 
-    const videoUrl = `https://youtu.be/${match[1]}`
-    const apiUrl = `https://api.vreden.my.id/api/v1/download/youtube/video?url=${encodeURIComponent(videoUrl)}&quality=360`
+    if (!query.includes('youtu')) return m.reply('⚠️ Por favor, ingresa un enlace válido de YouTube.')
 
-    const res = await fetch(apiUrl)
-    const json = await res.json()
+    await m.react('⏳')
 
-    if (!json.result?.download?.url) throw '👹 No se pudo obtener el video.'
+    try {
+        const { data } = await axios.get(`https://api.delirius.store/download/ytmp4?url=${query}`)
 
-    const title = json.result.title || 'video'
-    const downloadUrl = json.result.download.url
+        if (!data.status) {
+            await m.react('❌')
+            return m.reply('⚠️ No se pudo procesar la descarga.')
+        }
 
-    await conn.sendFile(m.chat, downloadUrl, `${title}.mp4`, `> 💀 *${title}*\n> ✅ Video descargado en calidad 360p`, m)
-    await m.react('✔️')
-} catch (e) {
-    await m.react('✖️')
-    conn.reply(m.chat, typeof e === 'string'? e: '⚠ Ocurrió un error al procesar el video.', m)
+        const vid = data.data
+        const linkDescarga = vid.download
+
+        let info = `🎥 *YOUTUBE MP4 — BARBOZA*\n\n`
+        info += `📌 *Título:* ${vid.title}\n`
+        info += `👤 *Canal:* ${vid.author}\n`
+        info += `⚙️ *Calidad:* ${vid.format}\n\n`
+        info += `> *By: Barboza Developer x Zona Developers*`
+
+        await conn.sendMessage(m.chat, { 
+            video: { url: linkDescarga }, 
+            caption: info,
+            mimetype: 'video/mp4',
+            fileName: `${vid.title}.mp4`
+        }, { quoted: m })
+
+        await m.react('✅')
+
+    } catch (e) {
+        await m.react('❌')
+        m.reply('⚠️ Error al obtener el video.')
+    }
 }
-}
 
-handler.command = handler.help = ['ytmp4']
-handler.tags = ['descargas']
-handler.group = false // o true si deseas que solo funcione en grupos
+handler.help = ['ytmp4']
+handler.tags = ['downloader']
+handler.command = /^(ytmp4)$/i
 
 export default handler

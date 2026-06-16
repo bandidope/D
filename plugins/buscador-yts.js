@@ -1,58 +1,59 @@
-import fetch from "node-fetch";
+/**
+ * 📂 COMANDO: YouTube Search
+ * 📝 DESCRIPCIÓN: Búsqueda de videos en YouTube.
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ * 🔌 API: https://api.evogb.org
+ */
 
-let handler = async (m, { conn, text, usedPrefix, command}) => {
-  if (!text || !text.trim()) {
-    return m.reply(`🔎 *¿Qué deseas buscar en YouTube?*\n\n📌 *Uso:* ${usedPrefix + command} <término>\n📍 *Ejemplo:* ${usedPrefix + command} phonk 2024`);
-  }
+import axios from 'axios'
 
-  const query = text.trim();
-  const url = `https://api.starlights.uk/api/search/youtube?q=${encodeURIComponent(query)}`;
-  
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error();
-    const json = await res.json();
+var handler = async (m, { conn, text, usedPrefix, command }) => {
+    let query = text ? text.trim() : (m.quoted?.text || null)
+    if (!query) return conn.reply(m.chat, `✨ *Ingresa lo que deseas buscar*\n\n> *Ejemplo:* ${usedPrefix + command} Lupita`, m)
 
-    if (!json.status || !json.result || json.result.length === 0) {
-      return m.reply("❌ *No se encontraron resultados para esta búsqueda.*");
+    await m.react('🔍')
+
+    try {
+        const _0x4a1b = 'ZWt1c2Fz' 
+        const key = Buffer.from(_0x4a1b, 'base64').toString('utf-8').split('').reverse().join('')
+        
+        const { data } = await axios.get(`https://api.evogb.org/search/yt?query=${encodeURIComponent(query)}&key=${key}`)
+        
+        if (!data.status || !data.result.length) {
+            await m.react('❌')
+            return m.reply('⚠️ *No se encontraron resultados.*')
+        }
+
+        let ui = `┏━━━━━━━━━━━━━━━━┓\n`
+        ui += `┃   🎥 *YOUTUBE SEARCH* ┃\n`
+        ui += `┗━━━━━━━━━━━━━━━━┛\n\n`
+
+        data.result.slice(0, 6).forEach((vid, i) => {
+            ui += `*${i + 1}.* ${vid.title}\n`
+            ui += `👤 *Autor:* ${vid.autor}\n`
+            ui += `⏱️ *Duración:* ${vid.duration}\n`
+            ui += `👁️ *Vistas:* ${vid.views}\n`
+            ui += `🔗 *Link:* ${vid.url}\n\n`
+        })
+
+        ui += `━━━━━━━━━━━━━━━━━━━━`
+
+        await conn.sendMessage(m.chat, { 
+            image: { url: data.result[0].banner }, 
+            caption: ui 
+        }, { quoted: m })
+
+        await m.react('✅')
+
+    } catch (e) {
+        await m.react('❌')
+        m.reply('⚠️ *Error al conectar con la API de YouTube.*')
     }
+}
 
-    const videos = json.result.slice(0, 5);
+handler.help = ['yts', 'youtube']
+handler.tags = ['search']
+handler.command = /^(yts|ytsearch|youtube|yt)$/i
 
-    for (const video of videos) {
-      const caption = `
-┏━━━━〔 🎬 *YOUTUBE SEARCH* 〕━━━━┓
-┃
-┃ 📌 *Título:* ${video.title}
-┃ 👤 *Canal:* ${video.channel}
-┃ ⏱️ *Duración:* ${video.duration}
-┃ 🔗 *Link:* ${video.link}
-┃
-┣━━━━━━━━━━━━━━━━━━━━━━┛
-┃ 📥 *DESCARGAS DISPONIBLES:*
-┃ 🎵 *Audio:* ${usedPrefix}ytmp3 ${video.link}
-┃ 🎥 *Video:* ${usedPrefix}ytmp4 ${video.link}
-┃
-┃ ⚡ *𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾*
-┗━━━━━━━━━━━━━━━━━━━━━━━┛`.trim();
-
-      await conn.sendMessage(
-        m.chat,
-        { image: { url: video.imageUrl }, caption },
-        { quoted: m }
-      );
-    }
-    
-    await m.react("✅");
-
-  } catch (e) {
-    console.error(e);
-    return m.reply("⚠️ *Error en la conexión con los servidores de YouTube.*");
-  }
-};
-
-handler.help = ["yts <texto>"];
-handler.tags = ["búsquedas"];
-handler.command = /^(ytsearch|yts|searchyt)$/i;
-
-export default handler;
+export default handler
