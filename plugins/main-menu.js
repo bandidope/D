@@ -22,8 +22,8 @@ const borderBottom = '╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯';
 
 const menuFooter = `
 ${borderTop}
-┃  ✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐒𝐘𝐒𝐓𝐄𝐌*
-┃  🛠️ *By Didier Developers*
+┃  ✨ *Prime Bot System*
+┃  🛠️ *By Whois Developers*
 ┃  ⚡ *Power & Speed*
 ${borderBottom}
 `.trim();
@@ -43,7 +43,7 @@ const handler = async (m, { conn, usedPrefix }) => {
     const tagUsuario = `@${m.sender.split('@')[0]}`;
     const userName = (await conn.getName?.(m.sender)) || tagUsuario;
 
-    const adText = ["Didier System", "Interface V3", "Cyber Bot"].getRandom();
+    const adText = ["Whois System", "Interface V3", "Prime Bot"].getRandom();
 
     let thumbnailBuffer;
     try {
@@ -54,12 +54,12 @@ const handler = async (m, { conn, usedPrefix }) => {
     }
 
     const fkontak = {
-      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "DidierBot" },
+      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "PrimeBot" },
       message: {
         locationMessage: {
           name: adText,
           jpegThumbnail: thumbnailBuffer,
-          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Didier;;;\nFN:Didier\nORG:DidierBot\nEND:VCARD"
+          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Prime;;;\nFN:Prime\nORG:WhoisBot\nEND:VCARD"
         }
       },
       participant: "0@s.whatsapp.net"
@@ -94,7 +94,7 @@ const handler = async (m, { conn, usedPrefix }) => {
 ${saludo} ${tagUsuario} ✨
 
 ${borderTop}
-┃  ⚡ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐌𝐄𝐍𝐔*
+┃  ⚡ *Prime Menu*
 ┃  👤 *Usuario:* ${userName}
 ┃  📈 *Nivel:* ${level}
 ┃  ✨ *Exp:* ${exp - min}/${xp}
