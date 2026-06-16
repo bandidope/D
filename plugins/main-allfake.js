@@ -47,8 +47,8 @@ var handler = async function (m, conn, db) {
 
     // Lista de canales
     let canalIdM = [
-        "120363414007802886@newsletter",
-        "120363414007802886@newsletter"
+        "120363419947391620@newsletter",
+        "120363419947391620@newsletter"
     ]
     let canalNombreM = [
         "𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 🤖",
@@ -118,7 +118,7 @@ var handler = async function (m, conn, db) {
             externalAdReply: {
                 showAdAttribution: true,
                 title: "Texto del bot",
-                body: '🚀 ♡↝𝙏𝙝𝙚 𝙆𝙞𝙣𝙜'𝙨 𝘽𝙤𝙩 👾',
+                body: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡',
                 previewType: "PHOTO",
                 thumbnailUrl: "https://qu.ax/QGAVS.jpg",
                 sourceUrl: "https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18",
