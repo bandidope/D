@@ -41,9 +41,9 @@ var handler = async function (m, conn, db) {
     let pushname = m.pushName || 'Sin nombre'
 
     // Datos generales del bot
-    let creador = 'Wa.me/56966352834'
+    let creador = 'Wa.me/51936994155'
     let ofcbot = conn.user.jid.split('@')[0]
-    let asistencia = 'Wa.me/56966352834'
+    let asistencia = 'Wa.me/51936994155'
 
     // Lista de canales
     let canalIdM = [
