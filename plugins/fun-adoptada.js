@@ -1,23 +1,26 @@
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    // Determinamos quién es el objetivo (mención, respuesta o texto)
+    let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : text ? text.replace(/[^0-9]/g, '') + '@s.whatsapp.net' : null;
 
-let handler = async (m, { conn, text }) => {
-    // Verificar si se ha proporcionado un usuario
-    if (!text) {
-        return conn.sendMessage(m.chat, { text: "Por favor, menciona a un usuario. Ejemplo: .adoptada @usuario" }, { quoted: m });
-    }
+    // Si no se encuentra a nadie, enviamos el ejemplo de uso
+    if (!who) return conn.reply(m.chat, `*Etiqueta a un therian para ganar la partida.*\n\nEjemplo: ${usedPrefix + command} @usuario`, m);
 
-    let userMentioned = text.split('@')[1]; // Extraer el ID del usuario mencionado
+    // Obtenemos el nombre del usuario de forma segura
+    let user = global.db.data.users[who]
+    let name = user ? user.name : await conn.getName(who);
 
-    // Obtener el nombre del usuario mencionado usando conn.getName()
-    let mentionedName = await conn.getName(userMentioned + '@s.whatsapp.net');
+    // El mensaje final con el nombre y el texto que pediste
+    let mensaje = `*te haz follado un therian y lo fuiste a tirar al río con sus amigos los lagartos easy win🦎🏆*`;
 
-    let adoptadaMessage = `*${mentionedName}* *ES/IS* *%* *ADOPTADA* _Sus padres se fueron x pañales 😞😂_`;
-
-    // Enviamos el mensaje al chat
-    await conn.sendMessage(m.chat, { text: adoptadaMessage }, { quoted: m });
+    // Enviamos el mensaje con la mención activa
+    await conn.sendMessage(m.chat, { 
+        text: mensaje, 
+        mentions: [who] 
+    }, { quoted: m });
 }
 
-handler.help = ['adoptada @usuario'];
+handler.help = ['therian @user'];
 handler.tags = ['diversión'];
-handler.command = ['adoptada'];
+handler.command = ['therians', 'therian'];
 
 export default handler;

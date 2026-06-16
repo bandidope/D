@@ -45,6 +45,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break;
 
     case 'audios':
+    case 'audiosbot':
       if (m.isGroup && !isAdmin) return global.dfail('admin', m, conn);
       chat.audios = isEnable;
       break;
@@ -64,6 +65,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break;
 
     case 'restrict':
+    case 'restringir':
       isAll = true;
       if (!isOwner) return global.dfail('rowner', m, conn);
       bot.restrict = isEnable;
@@ -100,53 +102,55 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break;
 
     case 'antiarabes':
+    case 'antifakes':
       if (m.isGroup && !(isAdmin || isOwner)) return global.dfail('admin', m, conn);
       chat.onlyLatinos = isEnable;
       break;
 
     default:
       if (!/[01]/.test(command)) return m.reply(`
-✨ 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 - 𝐂𝐄𝐍𝐓𝐑𝐎 𝐃𝐄 𝐂𝐎𝐍𝐓𝐑𝐎𝐋
-──────────────────────
-⚙️ *Ajustes de Sistema y Seguridad*
-
-⚡ *[welcome]* ⮕ Bienvenida
-⚡ *[nsfw]* ⮕ Modo Adulto
-⚡ *[antilink]* ⮕ Bloqueo de Links
-⚡ *[antilag]* ⮕ Optimizar RAM
-⚡ *[antiarabes]* ⮕ Filtro Regional
-⚡ *[autoleer]* ⮕ Lectura Auto
-⚡ *[restrict]* ⮕ Restricciones
-⚡ *[document]* ⮕ Modo Documento
-⚡ *[modoadmin]* ⮕ Solo Staff
-⚡ *[audios]* ⮕ Notas de Voz
-⚡ *[subbots]* ⮕ Sistema JadiBot
-
-🛠️ *Uso:* ${usedPrefix + command} welcome
-──────────────────────`.trim())
+╭━━〔 *ＴＨＥ ＫＩＮＧＳ ＢＯＴ* 〕━━┈⊷
+┃ ⚙️ *PANEL DE CONTROL*
+┃
+┃ ➲ *welcome* (Bienvenida)
+┃ ➲ *nsfw* (Comandos +18)
+┃ ➲ *antilag* (Limpieza de chat)
+┃ ➲ *antilink* (Anti-Enlaces)
+┃ ➲ *antiarabes* (Filtro de prefijos)
+┃ ➲ *autoleer* (Visto automático)
+┃ ➲ *restrict* (Restricciones)
+┃ ➲ *document* (Enviar como doc)
+┃ ➲ *modoadmin* (Solo admins)
+┃ ➲ *audios* (Efectos/Notas)
+┃ ➲ *subbots* (Función JadiBot)
+┃
+┃ 💡 *Uso:* ${usedPrefix + command} [opción]
+╰━━━━━━━━━━━━━━━━━━┈⊷`.trim())
       throw false
   }
 
-  let statusText = isEnable ? 'ＥＮＣＥＮＤＩＤＯ ✅' : 'ＡＰＡＧＡＤＯ ❌';
-  let scopeText = isAll ? 'ＴＯＤＯ ＥＬ ＢＯＴ' : isUser ? 'ＵＳＵＡＲＩＯ' : 'ＥＳＴＥ ＣＨＡＴ';
+  let statusIcon = isEnable ? '『 ACTIVADO ✅ 』' : '『 DESACTIVADO ❌ 』';
+  let scopeIcon = isAll ? '🌐 Global' : isUser ? '👤 Usuario' : '🏘️ Chat Actual';
 
-  let confirm = `
-✨ *𝐃 𝐈 𝐃 𝐈 Ｅ 𝐑  𝐁 Ｏ Ｔ* ✨
-──────────────────────
-🚦 *ESTADO DE LA FUNCIÓN*
+    let confirm = `
+🪐 *––––*  *⚡ Pᴏᴡᴇʀᴇᴅ Bʏ Tᴇᴀᴍ Nɪɢʜᴛᴡɪsʜ   ⚡*  *––––* 🪐
 
-🛠️ *Parámetro:* \`${type}\`
-⚡ *Estado:* ${statusText}
-📍 *Ruta:* ${scopeText}
+   ┏━━━━━━━━━━━━━━━━━━━━┓
+   ┃  ⚙️  *PANEL DE CONTROL*
+   ┃
+   ┃  ◈ *MÓDULO:* \`${type}\`
+   ┃  ◈ *ESTADO:* ${statusIcon}
+   ┃  ◈ *ORIGEN:* ${scopeIcon}
+   ┗━━━━━━━━━━━━━━━━━━━━┛
 
-🚀 *¡Configuración aplicada con éxito!*
-──────────────────────`.trim()
+   📡 _Sincronizando cambios en el sistema..._
+   *⚡ Pᴏᴡᴇʀᴇᴅ Bʏ Tᴇᴀᴍ Nɪɢʜᴛᴡɪsʜ ⚡*`.trim()
 
   m.reply(confirm)
 }
 
 handler.help = ['enable', 'disable', 'on', 'off']
-handler.tags = ['nable']
+handler.tags = ['config']
 handler.command = /^(enable|disable|on|off|1|0)$/i
 
 export default handler
