@@ -24,13 +24,13 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
                     "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
                     "N:;Didier Bot;;;\n" +
-                    "FN:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼\n" +
+                    "FN:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡\n" +
                     "ORG:Didier Developers\n" +
                     "TITLE:\n" +
-                    "item1.TEL;waid=19709001746:+1 (970) 900-1746\n" +
+                    "item1.TEL;waid=51936994155:+51 936 994 15t\n" +
                     "item1.X-ABLabel:Didier\n" +
                     "X-WA-BIZ-DESCRIPTION:🚀 Notificador oficial de actividad grupal.\n" +
-                    "X-WA-BIZ-NAME:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼\n" +
+                    "X-WA-BIZ-NAME:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡\n" +
                     "END:VCARD"
             }
         },
