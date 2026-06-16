@@ -25,7 +25,7 @@ let crm4 = "IF9hdXRvcmVzcG9uZGVyLmpzIGluZm8tYm90Lmpz"
 let drm1 = ""
 let drm2 = ""
 let rtx = `
-╔═══『  𝚀𝚁 』═══╗
+╔═══『 🌀 𝚂𝙰𝚂𝚄𝙺𝙴 - 𝚀𝚁 』═══╗
 
 🔗 *Conexión Sub-Bot Temporal (QR)*
 
@@ -56,8 +56,7 @@ como *Sub-Bot Temporal* en esta sesión.
 ⚠ Si ya estás conectado en otra sesión,
 se recomienda cerrarla para evitar errores o bloqueos.
 `;
-
-let imagenUrl = 'https://files.catbox.moe/dpofx7.jpg';
+let imagenUrl = 'https://qu.ax/Ny958';
 
 let emoji2 = '🍁';
 

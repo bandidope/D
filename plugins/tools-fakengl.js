@@ -43,7 +43,7 @@ Ejemplo: *${usedPrefix + command}* NGL|Hola Mundo`;
 keni.help = ['fakengl *<titulo>|<texto>*'];
 keni.tags = ['maker'];
 keni.command = /^fakengl$/i;
-keni.register = true;
-keni.limit = true;
+keni.register = false;
+keni.limit = false;
 
 export default keni;

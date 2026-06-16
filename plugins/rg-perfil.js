@@ -2,7 +2,7 @@ import PhoneNumber from 'awesome-phonenumber';
 import fetch from 'node-fetch';
 import fs from 'fs';
 
-const imagen1 = 'https://cdn-sunflareteam.vercel.app/images/fe2072569a.jpg';
+const imagen1 = 'https://cdn.adoolab.xyz/dl/de20913b.jpg';
 
 const loadMarriages = () => {
     if (fs.existsSync('./media/database/marry.json')) {
@@ -75,7 +75,7 @@ var handler = async (m, { conn }) => {
     conn.sendFile(m.chat, pp, 'perfil.jpg', `${premium ? prem.trim() : noprem.trim()}`, m, { mentions: [who] });
 }
 
-handler.help = ['profile'];
+handler.help = ['perfil'];
 handler.group = false;
 handler.tags = ['rg'];
 handler.command = ['profile', 'perfil'];

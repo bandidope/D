@@ -5,30 +5,23 @@ import { webp2png } from '../lib/webp2mp4.js'
 
 let handler = async (m, { conn, args, usedPrefix, command }) => {
   let stiker = false
-  const emoji = '⚡'
-
+  
   try {
     let q = m.quoted ? m.quoted : m
     let mime = (q.msg || q).mimetype || q.mediaType || ''
 
     if (/webp|image|video/g.test(mime)) {
-      if (/video/g.test(mime) && (q.msg || q).seconds > 15) {
-        return m.reply(`⚠️ *Límite Excedido...*\n\nEl video es demasiado largo para ser sticker. Máximo 15 segundos.`)
+      if (/video/g.test(mime) && (q.msg || q).seconds > 25) {
+        return m.reply(`🇦🇱 *Lɪᴍɪᴛᴇ Exᴄᴇᴅɪᴅᴏ...*\n\nEl video es muy largo. Máximo 25 segundos para crear el sticker.`)
       }
 
       let img = await q.download?.()
       if (!img) {
         return conn.reply(m.chat,
-`╭╾━━━━╼ 〔 ❌ 〕 ╾━━━━╼╮
-┃  ⚡ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐄𝐑𝐑𝐎𝐑*
-┃
-┃ ❌ *Fallo al crear:*
-┃    No se pudo procesar.
-┃
-┃ 📌 *Asegúrate de enviar*
-┃    imagen, video o link.
-┃
-╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯`, m)
+`│ ❌ *ERROR DE SISTEMA:*
+│    No se pudo procesar el sticker.
+│ 📌 *Asegúrate de enviar media*
+│    o un link directo de imagen.`, m)
       }
 
       let out
@@ -52,7 +45,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       if (isUrl(args[0])) {
         stiker = await sticker(false, args[0], global.packsticker, global.packsticker2)
       } else {
-        return m.reply(`💢 *Error:* Esa URL no es válida o no contiene una imagen directa.`)
+        return m.reply(`💢 *Error:* La URL proporcionada no es válida.`)
       }
     }
   } finally {
@@ -60,19 +53,9 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       conn.sendFile(m.chat, stiker, 'sticker.webp', '', m)
     } else {
       return conn.reply(m.chat,
-`╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮
-┃  ✨ *𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓 𝐒𝐓𝐈𝐂𝐊𝐄𝐑𝐒*
-┃
-┃ 📸 *Envía imagen o video*
-┃      respondiendo a este msg.
-┃
-┃ ⏳ *Tiempo límite:* 15s
-┃
-┃ 🔗 *Usa un enlace:*
-┃     ${usedPrefix + command} url
-┃
-┃ 🚀 "Power & Speed Style"
-╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯\n*By Didier Developers • 𝐃𝐈𝐃𝐈𝐄𝐑 𝐁𝐎𝐓*`, m)
+`│ 🖼️ *Responde a una imagen*
+│ 🎥 *Responde a un video (15s)*
+│ 🔗 *O usa un enlace directo*`, m)
     }
   }
 }

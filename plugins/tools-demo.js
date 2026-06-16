@@ -14,11 +14,11 @@ isForwarded: false,
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `[ sᥲsᥙkᥱ ᑲ᥆𝗍 mძ 🌀|sᥲsᥙkᥱ ᑲ᥆𝗍 ]`,
+title: `[ 𝐒𝐭𝐨𝐫𝐦 𝐁𝐨𝐭 🇦🇱 ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
-sourceUrl: 'https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T'}}},
+sourceUrl: 'https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m'}}},
 { quoted: m})
     } catch (err) {
         m.reply('error cik:/ ' + err);
