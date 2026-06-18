@@ -22,7 +22,7 @@ const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
 
 const menuFooter = `
 ${borderTop}
-│  🛸 *Jackson Storm*
+│  🛸 *Prime Bot*
 │  🛠️ *𝖡𝗒 Whois*
 │  🛹 *Team Nightwish*
 ${borderBottom}
@@ -89,11 +89,8 @@ const handler = async (m, { conn, usedPrefix }) => {
       return `╭╾━━━━╼ 〔 ${emoji} ${title.toUpperCase()} 〕\n${list}\n╰╾━━━━╼ 〔 🛸 〕`;
     }).join('\n\n');
 
-    const header = `
-*Hola ${saludo} Un Gusto ${tagUsuario} 👋*
-
-${borderTop}
-│  👟 *Jackson Storm*
+    const header = `${borderTop}
+│  👟 *Prime Bot*
 │  👤 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈:* ${userName}
 │  📈 *𝖭𝗂𝗏𝖾𝗅:* ${level}
 │  ✨ *𝖤𝗑𝗉:* ${exp - min}/${xp}
