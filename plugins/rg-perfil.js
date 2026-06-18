@@ -2,7 +2,7 @@ import PhoneNumber from 'awesome-phonenumber';
 import fetch from 'node-fetch';
 import fs from 'fs';
 
-const imagen1 = 'https://cdn.adoolab.xyz/dl/de20913b.jpg';
+const imagen1 = 'https://cdn.adoolab.xyz/dl/7e95df12.jpg';
 
 const loadMarriages = () => {
     if (fs.existsSync('./media/database/marry.json')) {
