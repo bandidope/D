@@ -15,15 +15,15 @@ const saludarSegunHora = () => {
   return '🌙 ¡Buenas noches!';
 };
 
-// Imagen Actualizada y Diseño Prime Bot
-const imgPrime = 'https://cdn.adoolab.xyz/dl/7e95df12.jpg';
+// Imagen Actualizada y Diseño Didier Bot
+const imgDidier = 'https://cdn.adoolab.xyz/dl/7e95df12.jpg';
 const borderTop = '╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮';
 const borderBottom = '╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯';
 
 const menuFooter = `
 ${borderTop}
 ┃  ✨ *𝐁𝐎𝐓 𝐒𝐘𝐒𝐓𝐄𝐌*
-┃  🛠️ *By Prime Developers*
+┃  🛠️ *By Didier Developers*
 ┃  ⚡ *Power & Speed*
 ${borderBottom}
 `.trim();
@@ -47,19 +47,19 @@ const handler = async (m, { conn, usedPrefix }) => {
 
     let thumbnailBuffer;
     try {
-      const response = await axios.get(imgPrime, { responseType: 'arraybuffer' });
+      const response = await axios.get(imgDidier, { responseType: 'arraybuffer' });
       thumbnailBuffer = Buffer.from(response.data);
     } catch {
       thumbnailBuffer = Buffer.alloc(0);
     }
 
     const fkontak = {
-      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "PrimeBot" },
+      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "Prime" },
       message: {
         locationMessage: {
           name: adText,
           jpegThumbnail: thumbnailBuffer,
-          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Prime;;;\nFN:Prime\nORG:PrimeBot\nEND:VCARD"
+          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Didier;;;\nFN:Didier\nORG:Prime\nEND:VCARD"
         }
       },
       participant: "0@s.whatsapp.net"
@@ -107,7 +107,7 @@ ${borderBottom}
     const fullMenu = `${header}\n\n${menuBody}\n\n${menuFooter}`;
 
     await conn.sendMessage(m.chat, {
-      image: { url: imgPrime },
+      image: { url: imgDidier },
       caption: fullMenu,
       mentions: [m.sender]
     }, { quoted: fkontak });
