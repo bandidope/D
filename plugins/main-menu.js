@@ -16,7 +16,7 @@ const saludarSegunHora = () => {
 };
 
 // Imagen proporcionada y diseño de Vans
-const imgVans = 'https://o.uguu.se/FJFpeOlF.jpg';
+const imgVans = 'https://cdn.adoolab.xyz/dl/97b77072.jpg';
 const borderTop = '╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮';
 const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
 
