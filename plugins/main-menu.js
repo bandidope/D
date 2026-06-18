@@ -16,7 +16,7 @@ const saludarSegunHora = () => {
 };
 
 // Imagen Actualizada y Diseño Didier Bot
-const imgDidier = 'https://files.catbox.moe/dpofx7.jpg';
+const imgDidier = 'https://cdn.adoolab.xyz/dl/7e95df12.jpg';
 const borderTop = '╭╾━━━━╼ 〔 ⚡ 〕 ╾━━━━╼╮';
 const borderBottom = '╰╾━━━━╼ 〔 🚀 〕 ╾━━━━╼╯';
 
