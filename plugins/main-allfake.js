@@ -30,7 +30,7 @@ var handler = async function (m, conn, db) {
 
     // Obtener información del usuario
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://qu.ax/QGAVS.jpg')
+    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://cdn.adoolab.xyz/dl/7e95df12.jpg')
 
     // Obtener nacionalidad
     let api = await axios.get(`https://deliriussapi-oficial.vercel.app/tools/country?text=${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}`)
@@ -120,7 +120,7 @@ var handler = async function (m, conn, db) {
                 title: "Texto del bot",
                 body: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡',
                 previewType: "PHOTO",
-                thumbnailUrl: "https://qu.ax/QGAVS.jpg",
+                thumbnailUrl: "https://cdn.adoolab.xyz/dl/7e95df12.jpg",
                 sourceUrl: "https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m",
                 mediaType: 1,
                 renderLargerThumbnail: false
