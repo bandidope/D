@@ -1,44 +1,64 @@
-/**
- * 📂 COMANDO: Uchiha YouTube MP3 Downloader
- * 📝 DESCRIPCIÓN: Extrae y descarga el audio de YouTube con el mapeo del JSON de la API.
- * 👤 CREADOR: Barboza Developer
- * ⚡ CANAL: Barboza Developer x Zona Developers
- * 🔌 API: https://api.evogb.org
- */
 import fetch from "node-fetch"
+import yts from 'yt-search'
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    const key = Buffer.from('c2FzdWtl', 'base64').toString('utf-8')
-    if (!text) return conn.reply(m.chat, `*☁️ Uchiha Cloud Download*\n\n*Uso correcto:*\n> *${usedPrefix + command} https://youtu.be/XXXXXX*`, m)
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) return conn.reply(m.chat, `*Ingrese nombre o link*\n\n*Ejemplo:* ${usedPrefix}${command} Yan Block 444`, m)
 
-    await m.react('⏳')
+    const isVideo = command === 'play2'
+    await m.react(isVideo ? '🎥' : '🎧')
+
     try {
-        let resDl = await fetch(`https://api.evogb.org/dl/ytmp3?url=${encodeURIComponent(text)}&key=${key}`)
-        let jsonDl = await resDl.json()
-        if (!jsonDl.status || !jsonDl.data || !jsonDl.data.dl) {
+        let videoUrl = text
+        let duration = ''
+
+        if (!text.match(/youtu/gi)) {
+            const search = await yts(text)
+            if (!search.all.length) {
+                await m.react('❌')
+                return m.reply('❌ Sin resultados')
+            }
+            videoUrl = search.videos[0].url
+            duration = search.videos[0].timestamp
+        }
+
+        const endpoint = isVideo ? 'ytmp4' : 'ytmp3'
+        const apiUrl = `https://api.delirius.store/download/${endpoint}?url=${encodeURIComponent(videoUrl)}${isVideo ? '&format=360p' : ''}`
+        
+        const res = await fetch(apiUrl)
+        const json = await res.json()
+
+        if (!json.status || !json.data) {
             await m.react('❌')
-            return m.reply('❌ Error al procesar la descarga del audio de YouTube.')
+            return m.reply('⚠️ Error API')
         }
 
-        let { title, thumbnail, author, dl, quality } = jsonDl.data
-        let info = `*☁️ Uchiha Cloud - Audio Localizado*\n\n📌 *Título:* ${title}\n👤 *Canal:* ${author?.name || 'Desconocido'}\n💿 *Calidad:* ${quality || '128kbps'}\n\n📂 *COMANDO:* Uchiha YouTube MP3 Downloader\n👤 *CREADOR:* Barboza Developer\n⚡ *CANAL:* Barboza Developer x Zona Developers\n🔌 *API:* https://api.evogb.org`
+        const { title, author, image, download } = json.data
 
-        if (thumbnail) {
-            await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: info }, { quoted: m })
+        let info = `📌 *${title}*\n👤 *${author}*\n⏱️ *${duration}*\n📦 *${isVideo ? 'MP4' : 'MP3'}*\n\n*By: Whois Developer*`
+
+        if (isVideo) {
+            await conn.sendMessage(m.chat, { 
+                video: { url: download }, 
+                caption: info,
+                mimetype: 'video/mp4'
+            }, { quoted: m })
         } else {
-            await conn.reply(m.chat, info, m)
+            await conn.sendMessage(m.chat, { image: { url: image }, caption: info }, { quoted: m })
+            await conn.sendMessage(m.chat, { 
+                audio: { url: download }, 
+                mimetype: 'audio/mpeg',
+                fileName: `${title}.mp3`
+            }, { quoted: m })
         }
 
-        await conn.sendMessage(m.chat, { audio: { url: dl }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` }, { quoted: m })
         await m.react('✅')
+
     } catch (e) {
         await m.react('❌')
-        m.reply('❌ Ocurrió un error interno en los servidores de Uchiha Cloud.')
+        conn.reply(m.chat, '🛑 Error', m)
     }
 }
 
-handler.help = ['ytmp3']
-handler.tags = ['downloader']
-handler.command = /^(ytmp3|yta|playmp3)$/i
+handler.command = ['play']
 
 export default handler
