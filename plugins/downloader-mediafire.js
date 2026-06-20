@@ -1,57 +1,45 @@
 /**
- * 📂 COMANDO: mediafire
- * 📝 DESCRIPCIÓN: Descarga archivos de MediaFire.
+ * 📂 COMANDO: Uchiha MediaFire Downloader
+ * 📝 DESCRIPCIÓN: Extrae y descarga archivos de MediaFire con el mapeo del JSON de la API.
  * 👤 CREADOR: Barboza Developer
  * ⚡ CANAL: Barboza Developer x Zona Developers
  * 🔌 API: https://api.evogb.org
  */
+import fetch from "node-fetch"
 
-import axios from 'axios'
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    const key = Buffer.from('c2FzdWtl', 'base64').toString('utf-8')
+    if (!text) return conn.reply(m.chat, `*☁️ Uchiha Cloud Download*\n\n*Uso correcto:*\n> *${usedPrefix + command} https://www.mediafire.com/file/XXXXXX*`, m)
 
-var handler = async (m, { conn, text, usedPrefix, command }) => {
-    let query = text ? text.trim() : (m.quoted?.text || null)
-    if (!query) return conn.reply(m.chat, `✨ *Ingresa un enlace de MediaFire*\n\n> *Ejemplo:* ${usedPrefix + command} https://www.mediafire.com/file/...`, m)
-
-    await m.react('📥')
-
+    await m.react('⏳')
     try {
-        const _0x4a1b = 'ZWt1c2Fz' 
-        const key = Buffer.from(_0x4a1b, 'base64').toString('utf-8').split('').reverse().join('')
-
-        const { data } = await axios.get(`https://api.evogb.org/dl/mediafire?url=${encodeURIComponent(query)}&key=${key}`)
-
-        if (!data.status) {
+        let resDl = await fetch(`https://api.evogb.org/dl/mediafire?url=${encodeURIComponent(text)}&key=${key}`)
+        let jsonDl = await resDl.json()
+        if (!jsonDl.status || !jsonDl.data || !jsonDl.data.dl) {
             await m.react('❌')
-            return m.reply('⚠️ *No se pudo obtener el archivo.*')
+            return m.reply('❌ Error al procesar la descarga de MediaFire.')
         }
 
-        let ui = `┏━━━━━━━━━━━━━━━━┓\n`
-        ui += `┃  📦 *MEDIAFIRE DL* ┃\n`
-        ui += `┗━━━━━━━━━━━━━━━━┛\n\n`
-        ui += `📄 *NOMBRE:* ${data.data.name}\n`
-        ui += `⚖️ *PESO:* ${data.data.size}\n`
-        ui += `📁 *TIPO:* ${data.data.type}\n\n`
-        ui += `━━━━━━━━━━━━━━━━━━━━\n`
-        ui += `⚡ *By: Barboza Developer*\n`
-        ui += `🌐 *Zona Developers*`
+        let { name, size, date, type, dl } = jsonDl.data
+        let info = `*☁️ Cloud - Archivo Localizado*\n\n📌 *Nombre:* ${name}\n📦 *Peso:* ${size}\n📅 *Fecha:* ${date || 'Desconocida'}\n🗂️ *Tipo:* ${type || 'Desconocido'}\n\n📂 *COMANDO:* MediaFire Downloader\n👤 *CREADOR:* Whois Developer\n⚡ *CANAL:* Prime Bot\n🔌 *API:* https://api.evogb.org`
 
+        await conn.reply(m.chat, info, m)
+        
         await conn.sendMessage(m.chat, { 
-            document: { url: data.data.dl }, 
-            fileName: data.data.name, 
-            mimetype: data.data.type.includes('APK') ? 'application/vnd.android.package-archive' : 'application/octet-stream',
-            caption: ui
+            document: { url: dl }, 
+            mimetype: 'application/vnd.android.package-archive', 
+            fileName: name.endsWith('.apk') ? name : `${name}.apk` 
         }, { quoted: m })
-
+        
         await m.react('✅')
-
     } catch (e) {
         await m.react('❌')
-        m.reply('⚠️ *Error al conectar con MediaFire.*')
+        m.reply('❌ Ocurrió un error interno en los servidores de Uchiha Cloud.')
     }
 }
 
 handler.help = ['mediafire']
 handler.tags = ['downloader']
-handler.command = /^(mediafire|mf)$/i
+handler.command = /^(mediafire|mf|mediafiredl)$/i
 
 export default handler
