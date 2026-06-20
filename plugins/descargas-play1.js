@@ -1,60 +1,44 @@
+/**
+ * 📂 COMANDO: Uchiha YouTube MP3 Downloader
+ * 📝 DESCRIPCIÓN: Extrae y descarga el audio de YouTube con el mapeo del JSON de la API.
+ * 👤 CREADOR: Barboza Developer
+ * ⚡ CANAL: Barboza Developer x Zona Developers
+ * 🔌 API: https://api.evogb.org
+ */
 import fetch from "node-fetch"
-import yts from 'yt-search'
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    const key = Buffer.from('c2FzdWtl', 'base64').toString('utf-8')
+    if (!text) return conn.reply(m.chat, `*☁️ Uchiha Cloud Download*\n\n*Uso correcto:*\n> *${usedPrefix + command} https://youtu.be/XXXXXX*`, m)
+
+    await m.react('⏳')
     try {
-        if (!text.trim()) return conn.reply(m.chat, `❀ Por favor, ingresa el nombre o link de YouTube.`, m)
-        await m.react('🕒')
-
-        const videoMatch = text.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/|v\/))([a-zA-Z0-9_-]{11})/)
-        const query = videoMatch ? 'https://youtu.be/' + videoMatch[1] : text
-        const search = await yts(query)
-        const result = videoMatch ? search.videos.find(v => v.videoId === videoMatch[1]) || search.all[0] : search.all[0]
-
-        if (!result) throw 'ꕥ No se encontraron resultados.'
-
-        const { title, thumbnail, timestamp, views, url, author } = result
-        const info = `「✦」Descargando *<${title}>*\n\n> ❑ Canal » *${author.name}*\n> ♡ Vistas » *${views.toLocaleString()}*\n> ✧︎ Duración » *${timestamp}*\n> ➪ Link » ${url}`
-
-        const thumb = (await conn.getFile(thumbnail)).data
-        await conn.sendMessage(m.chat, { image: thumb, caption: info }, { quoted: m })
-
-        // LÓGICA DE DELIRIUS (Primero MP3, luego MP4)
-        const isAudio = /play|yta|ytmp3|playaudio/i.test(command)
-        
-        if (isAudio) {
-            // API DELIRIUS MP3 V2
-            const res = await fetch(`https://api.delirius.store/download/ytmp3v2?url=${encodeURIComponent(url)}`)
-            const json = await res.json()
-
-            if (!json.success || !json.data?.download) throw '⚠ No se pudo obtener el audio de Delirius.'
-
-            await conn.sendMessage(m.chat, { 
-                audio: { url: json.data.download }, 
-                fileName: `${title}.mp3`, 
-                mimetype: 'audio/mpeg' 
-            }, { quoted: m })
-
-        } else {
-            // API DELIRIUS MP4
-            const res = await fetch(`https://api.delirius.store/download/ytmp4?url=${encodeURIComponent(url)}`)
-            const json = await res.json()
-
-            if (!json.status || !json.data?.download) throw '⚠ No se pudo obtener el video de Delirius.'
-
-            await conn.sendFile(m.chat, json.data.download, `${title}.mp4`, `> ❀ ${title}`, m)
+        let resDl = await fetch(`https://api.evogb.org/dl/ytmp3?url=${encodeURIComponent(text)}&key=${key}`)
+        let jsonDl = await resDl.json()
+        if (!jsonDl.status || !jsonDl.data || !jsonDl.data.dl) {
+            await m.react('❌')
+            return m.reply('❌ Error al procesar la descarga del audio de YouTube.')
         }
 
-        await m.react('✔️')
+        let { title, thumbnail, author, dl, quality } = jsonDl.data
+        let info = `*☁️ Uchiha Cloud - Audio Localizado*\n\n📌 *Título:* ${title}\n👤 *Canal:* ${author?.name || 'Desconocido'}\n💿 *Calidad:* ${quality || '128kbps'}\n\n📂 *COMANDO:* Uchiha YouTube MP3 Downloader\n👤 *CREADOR:* Barboza Developer\n⚡ *CANAL:* Barboza Developer x Zona Developers\n🔌 *API:* https://api.evogb.org`
 
+        if (thumbnail) {
+            await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: info }, { quoted: m })
+        } else {
+            await conn.reply(m.chat, info, m)
+        }
+
+        await conn.sendMessage(m.chat, { audio: { url: dl }, mimetype: 'audio/mpeg', fileName: `${title}.mp3` }, { quoted: m })
+        await m.react('✅')
     } catch (e) {
-        console.error(e)
-        await m.react('✖️')
-        return conn.reply(m.chat, `⚠︎ Error: ${e}`, m)
+        await m.react('❌')
+        m.reply('❌ Ocurrió un error interno en los servidores de Uchiha Cloud.')
     }
 }
 
-handler.command = /^(play|yta|ytmp3|play2|ytv|ytmp4|playaudio|mp4)$/i
-handler.group = false
+handler.help = ['ytmp3']
+handler.tags = ['downloader']
+handler.command = /^(ytmp3|yta|playmp3)$/i
 
 export default handler
