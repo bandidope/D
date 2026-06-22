@@ -18,19 +18,19 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
         },
         message: {
             locationMessage: {
-                name: "*𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼⚡*",
-                jpegThumbnail: await (await fetch('https://cdn.adoolab.xyz/dl/7e95df12.jpg')).buffer(),
+                name: "*𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭🌀*",
+                jpegThumbnail: await (await fetch('https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png')).buffer(),
                 vcard:
                     "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
                     "N:;Didier Bot;;;\n" +
-                    "FN:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡\n" +
+                    "FN:𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀\n" +
                     "ORG:Didier Developers\n" +
                     "TITLE:\n" +
                     "item1.TEL;waid=51936994155:+51 936 994 15t\n" +
                     "item1.X-ABLabel:Didier\n" +
                     "X-WA-BIZ-DESCRIPTION:🚀 Notificador oficial de actividad grupal.\n" +
-                    "X-WA-BIZ-NAME:𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡\n" +
+                    "X-WA-BIZ-NAME:𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀\n" +
                     "END:VCARD"
             }
         },
@@ -39,7 +39,7 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
 
     let chat = global.db.data.chats[m.chat]
     let usuario = `@${m.sender.split`@`[0]}`
-    let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://cdn.adoolab.xyz/dl/7e95df12.jpg'
+    let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'
 
     // Mensajes de detección en español
     let nombre = `> ✨ ${usuario} *ha cambiado el nombre del grupo* ✨\n\n> 📝 *Nuevo nombre:* _${m.messageStubParameters[0]}_`

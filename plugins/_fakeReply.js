@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 export async function before(m, { conn }) {
-let name = `𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡`
+let name = `𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀`
 /* let imagenes = ["https://raw.githubusercontent.com/WillZek/Storage-CB/main/images/c27c82d09da8.jpg",
 "https://raw.githubusercontent.com/WillZek/Storage-CB/main/images/c27c82d09da8.jpg",
 "https://raw.githubusercontent.com/WillZek/Storage-CB/main/images/c27c82d09da8.jpg",
@@ -11,8 +11,8 @@ let icono = imagenes[Math.floor(Math.random() * imagenes.length)]
 */
 
 let botdata = global.db.data.settings[conn.user.jid] || {}
-global.iconimg1 = botdata.icon1 || 'https://cdn.adoolab.xyz/dl/7e95df12.jpg'
-global.iconimg2 = botdata.icon2 || 'https://cdn.adoolab.xyz/dl/7e95df12.jpg'
+global.iconimg1 = botdata.icon1 || 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'
+global.iconimg2 = botdata.icon2 || 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'
 global.icono = pickRandom([global.iconimg1, global.iconimg2])
 
 global.rcanal = {

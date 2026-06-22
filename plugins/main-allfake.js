@@ -30,7 +30,7 @@ var handler = async function (m, conn, db) {
 
     // Obtener información del usuario
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://cdn.adoolab.xyz/dl/7e95df12.jpg')
+    let fotoperfil = await conn.profilePictureUrl(who, 'image').catch(() => 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png')
 
     // Obtener nacionalidad
     let api = await axios.get(`https://deliriussapi-oficial.vercel.app/tools/country?text=${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}`)
@@ -51,7 +51,7 @@ var handler = async function (m, conn, db) {
         "120363419947391620@newsletter"
     ]
     let canalNombreM = [
-        "𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 🤖",
+        "𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🤖",
         "𝗧𝗲𝗮𝗺 𝗡𝗶𝗴𝗵𝘁𝘄𝗶𝘀𝗵 🤖"
     ]
 
@@ -118,9 +118,9 @@ var handler = async function (m, conn, db) {
             externalAdReply: {
                 showAdAttribution: true,
                 title: "Texto del bot",
-                body: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡',
+                body: '𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀',
                 previewType: "PHOTO",
-                thumbnailUrl: "https://cdn.adoolab.xyz/dl/7e95df12.jpg",
+                thumbnailUrl: "https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png",
                 sourceUrl: "https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m",
                 mediaType: 1,
                 renderLargerThumbnail: false

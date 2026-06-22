@@ -17,11 +17,11 @@ export async function before(m, { conn, groupMetadata }) {
         participants: '0@s.whatsapp.net',
         remoteJid: 'status@broadcast',
         fromMe: false,
-        id: '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡'
+        id: '𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀'
       },
       message: {
         contactMessage: {
-          vcard: `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN: Pᴏᴡᴇʀᴇᴅ Bʏ Tᴇᴀᴍ Nɪɢʜᴛᴡɪsʜ 🌀\nitem1.TEL;waid=${
+          vcard: `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN: 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞  🌀\nitem1.TEL;waid=${
             conn.user.jid.split('@')[0]
           }:${conn.user.jid.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`
         }
@@ -54,7 +54,7 @@ export async function before(m, { conn, groupMetadata }) {
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
       const welcomeText = customWelcome
         ? customWelcome.replace(/@user/gi, user).replace(/@group/gi, groupName).replace(/@desc/gi, groupDesc)
-        : `✨ *¡Bienvenido/a!* ✨\n\nHola ${user}, es un gusto tenerte en *${groupName}*.\n\n📝 *REGLAS Y INFO:*\n${groupDesc}\n\n> *Pᴏᴡᴇʀᴇᴅ Bʏ Tᴇᴀᴍ Nɪɢʜᴛᴡɪsʜ 🌀*`;
+        : `✨ *¡Bienvenido/a!* ✨\n\nHola ${user}, es un gusto tenerte en *${groupName}*.\n\n📝 *REGLAS Y INFO:*\n${groupDesc}\n\n> *𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞  🌀*`;
 
       await conn.sendMessage(m.chat, {
         image: imgBuffer,
@@ -80,7 +80,7 @@ export async function before(m, { conn, groupMetadata }) {
     if (m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE) {
       const kickText = customKick
         ? customKick.replace(/@user/gi, user).replace(/@group/gi, groupName)
-        : `*¡Fue Expulsado ${user}!* ⚡\n\n_*-1 Perro En Este Grupo*_\n\n> *${groupName}*`;
+        : `*¡Fue Expulsado ${user}!* 🌀\n\n_*-1 Perro En Este Grupo*_\n\n> *${groupName}*`;
 
       await conn.sendMessage(m.chat, {
         image: imgBuffer,

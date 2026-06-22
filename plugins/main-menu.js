@@ -16,15 +16,15 @@ const saludarSegunHora = () => {
 };
 
 // Imagen proporcionada y diseño de Vans
-const imgVans = 'https://cdn.adoolab.xyz/dl/26172862.jpg';
+const imgVans = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png';
 const borderTop = '╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮';
 const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
 
 const menuFooter = `
 ${borderTop}
-│  🛸 *Prime Bot*
+│  🛸 *For Three Bot*
 │  🛠️ *𝖡𝗒 Whois*
-│  🛹 *Team Nightwish*
+│  🛹 *Team For Three*
 ${borderBottom}
 `.trim();
 
@@ -90,7 +90,7 @@ const handler = async (m, { conn, usedPrefix }) => {
     }).join('\n\n');
 
     const header = `${borderTop}
-│  👟 *Prime Bot*
+│  👟 *For Three Bot*
 │  👤 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈:* ${userName}
 │  📈 *𝖭𝗂𝗏𝖾𝗅:* ${level}
 │  ✨ *𝖤𝗑𝗉:* ${exp - min}/${xp}

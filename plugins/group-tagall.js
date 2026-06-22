@@ -11,11 +11,11 @@ const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, co
 
   const pesan = args.join` `;
   const oi = `*» INFO :* ${pesan}`;
-  let teks = `*!  MENCION GENERAL  !*\n  *PARA ${participants.length} MIEMBROS* 🗣️\n\n ${oi}\n\n╭  ┄ 𝅄 ۪꒰ \`⡞᪲=͟͟͞Prime Bot ⚡ ≼᳞ׄ\` ꒱ ۟ 𝅄 ┄\n`;
+  let teks = `*!  MENCION GENERAL  !*\n  *PARA ${participants.length} MIEMBROS* 🗣️\n\n ${oi}\n\n╭  ┄ 𝅄 ۪꒰ \`⡞᪲=͟͟͞For Three 🌀 ≼᳞ׄ\` ꒱ ۟ 𝅄 ┄\n`;
   for (const mem of participants) {
     teks += `┊${customEmoji} @${mem.id.split('@')[0]}\n`;
   }
-  teks += `╰⸼ ┄ ┄ ┄ ─  ꒰  ׅ୭ *Powered Team Nightwish* ୧ ׅ ꒱  ┄  ─ ┄ ⸼`;
+  teks += `╰⸼ ┄ ┄ ┄ ─  ꒰  ׅ୭ *Powered By For Three* ୧ ׅ ꒱  ┄  ─ ┄ ⸼`;
 
   conn.sendMessage(m.chat, { text: teks, mentions: participants.map((a) => a.id) });
 };
