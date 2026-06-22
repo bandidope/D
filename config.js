@@ -20,18 +20,18 @@ global.prems = []
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.packname = `[ 𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡ ]`
+global.packname = `[ 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀 ]`
 global.author = '𝓓𝓲𝓭𝓲𝓮𝓻'
-global.stickpack = '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡'
-global.stickauth = '𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗪𝗵𝗼𝗶𝘀 ⚡'
-global.wm = '𝗧𝗲𝗮𝗺 𝗡𝗶𝗴𝗵𝘁𝘄𝗶𝘀𝗵 ⚡'
-global.dev = '© 𝗧𝗲𝗮𝗺 𝗡𝗶𝗴𝗵𝘁𝘄𝗶𝘀𝗵 ⚡'
-global.wait = '🌪️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛᴏ... ฅ^•ﻌ•^ฅ\n\n> 𝗧𝗲𝗮𝗺 𝗡𝗶𝗴𝗵𝘁𝘄𝗶𝘀𝗵 ⚡ 🌪️*'
-global.botname = '[ 𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡ ]'
-global.textbot = `𝘽𝙮 𝘽𝙤𝙩`
-global.dev = '• 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗪𝗵𝗼𝗶𝘀 ⚡'
+global.stickpack = '𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀'
+global.stickauth = '𝐖𝐡𝐨𝐢𝐬 𝐘𝐚𝐥𝐥𝐢𝐜𝐨 🌀'
+global.wm = '𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞  🌀'
+global.dev = '© 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞  🌀'
+global.wait = '🌪️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛᴏ... ฅ^•ﻌ•^ฅ\n\n> 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐁𝐲 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞  🌀*'
+global.botname = '[ 𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀 ]'
+global.textbot = `𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭`
+global.dev = '• 𝐖𝐡𝐨𝐢𝐬 𝐘𝐚𝐥𝐥𝐢𝐜𝐨 🌀'
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '𝗣𝗿𝗶𝗺𝗲 𝗕𝗼𝘁 𝗣𝗿𝗼 ⚡'
+global.namechannel = '𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀'
 
 
 global.channel = 'https://whatsapp.com/channel/0029Vb5oUp43LdQUVViHwc0m'
