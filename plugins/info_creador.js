@@ -11,7 +11,7 @@ async function handler(m, { conn }) {
       nota: 'Creador del Bot',
       correo: 'yallico2024@gmail.com',
       region: 'Perú 🇵🇪',
-      web: ' https://Instagram.com/whois.yallico ',
+      web: 'https://Instagram.com/whois.yallico',
       biografia: await conn.fetchStatus('51936994155@s.whatsapp.net').then(res => res.status).catch(_ => 'Sin biografía')
     }
   ]
