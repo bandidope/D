@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn }) => {
-    const thumbUrl = `https://raw.githubusercontent.com/Kone457/Nexus/refs/heads/main/Anime/18a2f50ee4.jpg` 
+    const thumbUrl = `https://files.evogb.win/ddfwuH.jpg` 
     const thumbBuffer = await fetch(thumbUrl).then(res => res.buffer());
 
     let mensaje = `
