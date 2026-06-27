@@ -1,5 +1,5 @@
 const diasValidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
-const emojiDia = '※εϋ3'
+const emojiDia = '🌀'
 const IMAGEN_URL = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png' // <- IMAGEN DE PRUEBA. Cambiala después
 
 const getDB = () => {
@@ -33,7 +33,7 @@ let handler = async (m, { conn, text, args, isOwner }) => {
 
   // =====.sorteo eliminar =====
   if(sub === 'eliminar'){
-    if(!isOwner) return m.reply('⚠️ Solo el owner.')
+    if(!isAdmin) return m.reply('⚠️ Solo los administradores pueden eliminar.')
     if(args[1]!== 'si') return m.reply(`⚠️ *PELIGRO*\nEscribe:.sorteo eliminar si\npara borrar TODO.`)
     global.db.data.sorteo = {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], domingo:[]}
     await global.db.write()
