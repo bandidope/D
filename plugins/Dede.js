@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 const diasSemana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado']
 const diasValidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'extra']
 const diasBorrar = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado']
@@ -7,9 +10,9 @@ const MARCA = 'For Three Bot 🌀'
 const TZ = 'America/Lima'
 const MAX_USOS = 3
 
-// <- TUS 2 LINKS DE PIXELDRAIN FORMATO DIRECTO
-const AUDIO_NORMAL = 'https://pixeldrain.com/api/file/6AZ8vE34?download' // Lunes-Sab
-const AUDIO_DOMINGO = 'https://pixeldrain.com/api/file/RHKaJvbF?download' // Domingo/Extra
+// <- AUDIOS LOCALES. 0 ERROR DE LINK
+const AUDIO_NORMAL = fs.readFileSync('./storage/AudioNormal.mp3')
+const AUDIO_DOMINGO = fs.readFileSync('./storage/audioDomingo.mp3')
 
 const getDB = () => {
   global.db.data.sorteo??= {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
@@ -22,7 +25,6 @@ const getHoy = () => {
 }
 
 let handler = async (m, { conn, text, args, isAdmin, isOwner }) => {
-  // <- Reacciona 🌀 al toque
   await conn.sendMessage(m.chat, { react: { text: '🌀', key: m.key } }).catch(_=>{})
 
   let db = getDB()
@@ -75,7 +77,6 @@ let handler = async (m, { conn, text, args, isAdmin, isOwner }) => {
 
   numero = numero.replace(/\s/g, '')
 
-  // <- BLOQUEA EN EL 4TO INTENTO SOLO LUNES-SAB
   if(dia!== 'extra'){
     let usos = Object.values(db).flat().filter(x => x.numero.replace(/\s/g,'') === numero && x.tipo!== 'domingo' && x.tipo!== 'manual').length
     if(usos >= MAX_USOS) return m.reply(`⛔ *Rechazado*\nEl número ${numero} ya llegó a ${MAX_USOS}/3 usos en Lunes-Sab.\nUsa /extra si quieres anotarlo igual.`)
@@ -89,12 +90,9 @@ let handler = async (m, { conn, text, args, isAdmin, isOwner }) => {
   let contador = dia === 'extra'? '' : ` [${(Object.values(db).flat().filter(x => x.numero === numero && x.tipo!== 'domingo' && x.tipo!== 'manual').length)}/3]`
   let msg = `${emojiTag} *Anotado en ${dia.toUpperCase()}${contador}*\n# ${nombre} / ${numero} / ${premio}`
 
-  let audioUsar = esDomingo? AUDIO_DOMINGO : AUDIO_NORMAL
-  // <- audio/mp4 + link directo de Pixeldrain = Audio sí o sí
-  await conn.sendMessage(m.chat, { audio: { url: audioUsar }, mimetype: 'audio/mp4', ptt: true }, { quoted: m }).catch(e => {
-    console.log('Error Audio:', e)
-    m.reply('⚠️ No pude enviar el audio. Revisa el link de Pixeldrain.')
-  })
+  let audioBuffer = esDomingo? AUDIO_DOMINGO : AUDIO_NORMAL
+  // <- Mandamos el Buffer directo. WhatsApp ya no se queja
+  await conn.sendMessage(m.chat, { audio: audioBuffer, mimetype: 'audio/mpeg', ptt: true }, { quoted: m })
 
   m.reply(msg)
 }
