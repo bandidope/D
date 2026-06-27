@@ -1,6 +1,6 @@
 const diasValidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 const emojiDia = '※εϋ3'
-const IMAGEN_URL = 'https://i.imgur.com/8Km9t6f.png' // <- IMAGEN DE PRUEBA. Cambiala después
+const IMAGEN_URL = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png' // <- IMAGEN DE PRUEBA. Cambiala después
 
 const getDB = () => {
   global.db.data.sorteo??= {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], domingo:[]}
@@ -13,10 +13,10 @@ let handler = async (m, { conn, text, args, isOwner }) => {
 
   // =====.sorteo ver =====
   if(sub === 'ver' || sub === 'lista'){
-    let txt = `✨ LISTA DE GANADORES ✨\n»————————> ⚪ <————————«\n\n`
+    let txt = `🌀 GANADORES 🌀\n»————————> ⚪ <————————«\n\n`
     for(let dia of diasValidos){
       txt += `${emojiDia} ${dia.charAt(0).toUpperCase() + dia.slice(1)}:\n`
-      txt += db[dia].length > 0? db[dia].map((v,i)=> `#${i+1} ${v.nombre} | ${v.premio} | ${v.numero}`).join('\n') : `# (IG: Jotaa.hrz)`
+      txt += db[dia].length > 0? db[dia].map((v,i)=> `#${i+1} ${v.nombre} | ${v.premio} | ${v.numero}`).join('\n') : `# (For Three Bot 🌀)`
       txt += '\n\n'
     }
     
