@@ -1,102 +1,112 @@
-// =====.lista =====
-let handler = async (m, { conn, text }) => {
-  if (!text) return m.reply('🏹 Usa:.lista Nombre | Numero | Premio\n ↳ Ej: Eli|+56 9 6507 5648|apk')
+import fs from 'fs'
+const dbFile = './database/sorteo.json'
+const admins = ['5492914429409@s.whatsapp.net'] // <- Pon aquí el número del bot/staff sin +
+
+const loadDB = () => fs.existsSync(dbFile)? JSON.parse(fs.readFileSync(dbFile)) : { dias: {} }
+const saveDB = (data) => fs.writeFileSync(dbFile, JSON.stringify(data, null, 2))
+const isAdmin = (sender) => admins.includes(sender)
+
+let handler = async (m, { sock, text }) => {
+  if (!text.includes('|')) {
+    return m.reply(`🚫 𝗙𝗼𝗿𝗺𝗮𝘁𝗼 𝗶𝗻𝗰𝗼𝗿𝗲𝗰𝘁𝗼
+
+─⋆ 𝑼𝒔𝒆 🍄
+.lista tu nombre | número del ganador | premio
+
+─⋆ 𝑬𝒋𝒆𝒎𝒑𝒍𝒐 ✅
+.lista Eli | +56 9 6507 5648 | apk`)
+  }
+
   let [nombre, numero, premio] = text.split('|').map(v => v.trim())
-  if (!nombre ||!numero ||!premio) return m.reply('Falta un dato bro. Formato: Nombre | Numero | Premio')
+  numero = numero.replace(/\s/g, '')
 
   global.sorteoTemp = global.sorteoTemp || {}
-  global.sorteoTemp[m.sender] = {nombre, numero, premio}
+  global.sorteoTemp[m.sender] = { nombre, numero, premio }
 
-  let sections = [{
-    title: "Selecciona el dia para anotar",
-    rows: [
-      {title: `🌈 Lunes`, rowId: `.addlunes`},
-      {title: `🌈 Martes`, rowId: `.addmartes`},
-      {title: `🌈 Miercoles`, rowId: `.addmiercoles`},
-      {title: `🌈 Jueves`, rowId: `.addjueves`},
-      {title: `🌈 Viernes`, rowId: `.addviernes`},
-      {title: `🌈 Sabado`, rowId: `.addsabado`},
-      {title: `⭐ Extra`, rowId: `.addextra`},
-    ]
-  }]
+  const buttons = [
+    {buttonId: '.dia lunes', buttonText: {displayText: '↩️ ˚₊⋆🏹 Lunes'}, type: 1},
+    {buttonId: '.dia martes', buttonText: {displayText: '↩️ ˚₊⋆🍿 Martes'}, type: 1},
+    {buttonId: '.dia miercoles', buttonText: {displayText: '↩️ ˚₊⋆🌷 Miercoles'}, type: 1},
+    {buttonId: '.dia jueves', buttonText: {displayText: '↩️ ˚₊⋆🫧 Jueves'}, type: 1},
+    {buttonId: '.dia viernes', buttonText: {displayText: '↩️ ˚₊⋆🌐 Viernes'}, type: 1}, // Gris si no es admin
+    {buttonId: '.dia sabado', buttonText: {displayText: '↩️ ˚₊⋆🌈 Sabado'}, type: 1},
+    {buttonId: '.dia extra', buttonText: {displayText: '↩️ ˚₊⋆⭐ Extra'}, type: 1},
+  ]
 
-  return conn.sendList(m.chat, '⭐ ღ Sorteo anotado ღ', `Nombre: ${nombre}\nNumero: ${numero}\nPremio: ${premio}`, 'Tocar aquí', sections, m)
+  await sock.sendMessage(m.chat, {
+    text: `★.꒰ঌ Sorteo anotado 🧍‍♀️🧍‍♀️
+    °°₊.+.° ✧ °₊.+.°°
+
+—★🌈 *Nombre:* ${nombre}
+—★🧺 *Numero:* ${numero}
+—★🍒 *Premio:* ${premio}
+
+** Selecciona el dia para anotar`,
+    footer: 'Staff KittyRolls',
+    buttons: buttons,
+    headerType: 1
+  }, { quoted: m })
 }
-handler.command = /^lista$/i
+handler.command = /^(lista)$/i
 export default handler
 
-// ===== Función para no repetir código =====
-const addDia = async (m, conn, dia) => {
-  let data = global.sorteoTemp?.[m.sender]
-  if(!data) return m.reply('Primero usa.lista bro')
 
-  db.data.sorteo = db.data.sorteo || {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
-  db.data.sorteo[dia].push(data)
+let diaHandler = async (m, { sock, args }) => {
+  const dia = args[0]?.toLowerCase()
+  const diasValidos = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'extra']
+  if (!diasValidos.includes(dia)) return
+  
+  // Bloquear viernes si no es admin
+  if (dia === 'viernes' &&!isAdmin(m.sender)) {
+    return m.reply('🚫 *Viernes bloqueado.* Solo staff puede anotar.')
+  }
+  
+  const data = global.sorteoTemp?.[m.sender]
+  if (!data) return m.reply('Primero usa.lista nombre | numero | premio')
+
+  const db = loadDB()
+  db.dias[dia] = db.dias[dia] || []
+  db.dias[dia].push(`${data.nombre}/${data.numero}/${data.premio}`)
+  saveDB(db)
   delete global.sorteoTemp[m.sender]
 
-  let lista = db.data.sorteo[dia].map((v,i)=> `⌗ ${v.nombre} | ${v.numero} | ${v.premio}`).join('\n')
-  m.reply(`⨳દᵕ̈૩ *${dia.charAt(0).toUpperCase() + dia.slice(1)}:*\n${lista || '(vacío)'}`)
+  m.reply(`★.꒰ঌ Sorteo anotado 🧍‍♀️🧍‍♀️\n\n—★🌈 *Nombre:* ${data.nombre}\n—★🧺 *Numero:* ${data.numero}\n—★🍒 *Premio:* ${data.premio}\n\n*Anotado para:* ${dia.charAt(0).toUpperCase() + dia.slice(1)}`)
 }
+diaHandler.command = /^(dia)$/i
+export { diaHandler }
 
-// ===== Los 7 días =====
-let addLunes = async (m, {conn}) => addDia(m, conn, 'lunes')
-addLunes.command = /^addlunes$/i
-export {addLunes}
 
-let addMartes = async (m, {conn}) => addDia(m, conn, 'martes')
-addMartes.command = /^addmartes$/i
-export {addMartes}
+let verLista = async (m, { sock }) => {
+  const db = loadDB()
+  let txt = `+. ✨ 🍒 *Lista de ganadores*\n\n∞-----∞-----∞-----∞\n\n`
+  txt += `˖.★🏹 *Anotar asi*\n*Numero|Nombre|Premio*\n⟵★ ▸ Ejemplo\n*Rosee|+541131533445|Cali*\n\n`
 
-let addMiercoles = async (m, {conn}) => addDia(m, conn, 'miercoles')
-addMiercoles.command = /^addmiercoles$/i
-export {addMiercoles}
-
-let addJueves = async (m, {conn}) => addDia(m, conn, 'jueves')
-addJueves.command = /^addjueves$/i
-export {addJueves}
-
-let addViernes = async (m, {conn}) => addDia(m, conn, 'viernes')
-addViernes.command = /^addviernes$/i
-export {addViernes}
-
-let addSabado = async (m, {conn}) => addDia(m, conn, 'sabado')
-addSabado.command = /^addsabado$/i
-export {addSabado}
-
-let addExtra = async (m, {conn}) => addDia(m, conn, 'extra')
-addExtra.command = /^addextra$/i
-export {addExtra}
-
-// =====.verlista =====
-let verLista = async (m, {conn}) => {
-  db.data.sorteo = db.data.sorteo || {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
-  let {lunes, martes, miercoles, jueves, viernes, sabado, extra} = db.data.sorteo
-
-  let txt = `🪄 𝗟𝗜𝗦𝗧𝗔 𝗗𝗘 𝗚𝗔𝗡𝗔𝗗𝗢𝗥𝗘𝗦 🪄
-»———————> ⚪ <———————«\n\n`
-
-  let dias = {lunes, martes, miercoles, jueves, viernes, sabado, extra}
-  for(let dia in dias){
-    txt += `⨳દᵕ̈૩ *${dia.charAt(0).toUpperCase() + dia.slice(1)}:*\n`
-    txt += dias[dia].length? dias[dia].map(v=> `⌗ ${v.nombre} | ${v.numero} | ${v.premio}`).join('\n') : '🌈 (vacío)'
-    txt += '\n\n'
+  for (const dia of ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'extra']) {
+    txt += `˖+!! ☀️ ${dia.charAt(0).toUpperCase() + dia.slice(1)}\n`
+    if (db.dias[dia]?.length) {
+      db.dias[dia].forEach(x => txt += `★🌈 ${x}\n`)
+    } else {
+      txt += `★🌈 (Jota el mejor)\n`
+    }
+    txt += `\n`
   }
-  m.reply(txt.trim())
+  m.reply(txt)
 }
-verLista.command = /^verlista$/i
-export {verLista}
+verLista.command = /^(listaganadores|ganadores)$/i
+export { verLista }
 
-// =====.eliminarlista =====
-let delLista = async (m, {conn, args}) => {
-  if(!args[0]) return m.reply('Usa:.eliminarlista lunes/martes/.../todo')
-  if(args[0] == 'todo'){
-    db.data.sorteo = {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
-    return m.reply('🗑️ Lista borrada completa')
-  }
-  if(db.data.sorteo?.[args[0]]){
-    db.data.sorteo[args[0]] = []
-    m.reply(`🗑️ Lista de ${args[0]} borrada`)
-  } else m.reply('Día no válido')
+
+// --- NUEVO: Borrar una entrada --- Solo admin
+let borrar = async (m, { args }) => {
+  if (!isAdmin(m.sender)) return m.reply('🚫 Solo staff')
+  const [dia, num] = args
+  const db = loadDB()
+  if (!db.dias[dia] ||!db.dias[dia][num-1]) return m.reply('No existe esa entrada')
+  
+  let eliminado = db.dias[dia].splice(num-1, 1)
+  saveDB(db)
+  m.reply(`🗑️ Eliminado de ${dia}: ${eliminado[0]}`)
 }
-delLista.command = /^eliminarlista$/i
-export {delLista}
+borrar.command = /^(borrarlista)$/i
+borrar.help = ['borrarlista viernes 2'] // día + número de línea
+export { borrar }
