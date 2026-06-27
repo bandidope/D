@@ -1,7 +1,7 @@
 // =====.lista =====
 let handler = async (m, { conn, text }) => {
   if (!text) return m.reply('🏹 Usa:.lista Nombre | Numero | Premio\n ↳ Ej: Eli|+56 9 6507 5648|apk')
-  let [nombre, numero, premio] = text.split('|').map(v => v.trim())
+  let [nombre, numero, premio] = text.split('|', 3).map(v => v.trim()) // <- Fix split
   if (!nombre ||!numero ||!premio) return m.reply('Falta un dato bro. Formato: Nombre | Numero | Premio')
 
   global.sorteoTemp = global.sorteoTemp || {}
@@ -32,7 +32,7 @@ const addDia = async (m, conn, dia) => {
 
   global.db.data.sorteo = global.db.data.sorteo || {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
   global.db.data.sorteo[dia].push(data)
-  await global.db.write() // <- Esto para que guarde
+  await global.db.write()
   delete global.sorteoTemp[m.sender]
 
   let lista = global.db.data.sorteo[dia].map((v,i)=> `⌗ ${v.nombre} | ${v.numero} | ${v.premio}`).join('\n')
@@ -42,30 +42,37 @@ const addDia = async (m, conn, dia) => {
 // ===== Los 7 días =====
 let addLunes = async (m, {conn}) => addDia(m, conn, 'lunes')
 addLunes.command = /^addlunes$/i
+addLunes.help = ['addlunes'] // <- Fix botones
 export {addLunes}
 
 let addMartes = async (m, {conn}) => addDia(m, conn, 'martes')
 addMartes.command = /^addmartes$/i
+addMartes.help = ['addmartes']
 export {addMartes}
 
 let addMiercoles = async (m, {conn}) => addDia(m, conn, 'miercoles')
 addMiercoles.command = /^addmiercoles$/i
+addMiercoles.help = ['addmiercoles']
 export {addMiercoles}
 
 let addJueves = async (m, {conn}) => addDia(m, conn, 'jueves')
 addJueves.command = /^addjueves$/i
+addJueves.help = ['addjueves']
 export {addJueves}
 
 let addViernes = async (m, {conn}) => addDia(m, conn, 'viernes')
 addViernes.command = /^addviernes$/i
+addViernes.help = ['addviernes']
 export {addViernes}
 
 let addSabado = async (m, {conn}) => addDia(m, conn, 'sabado')
 addSabado.command = /^addsabado$/i
+addSabado.help = ['addsabado']
 export {addSabado}
 
 let addExtra = async (m, {conn}) => addDia(m, conn, 'extra')
 addExtra.command = /^addextra$/i
+addExtra.help = ['addextra']
 export {addExtra}
 
 // =====.verlista =====
@@ -92,10 +99,12 @@ let delLista = async (m, {conn, args}) => {
   if(!args[0]) return m.reply('Usa:.eliminarlista lunes/martes/.../todo')
   if(args[0] == 'todo'){
     global.db.data.sorteo = {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], extra:[]}
+    await global.db.write() // <- Fix guardar
     return m.reply('🗑️ Lista borrada completa')
   }
   if(global.db.data.sorteo?.[args[0]]){
     global.db.data.sorteo[args[0]] = []
+    await global.db.write() // <- Fix guardar
     m.reply(`🗑️ Lista de ${args[0]} borrada`)
   } else m.reply('Día no válido')
 }
