@@ -1,6 +1,6 @@
 import fs from 'fs'
 const dbFile = './database/sorteo.json'
-const admins = ['5492914429409@s.whatsapp.net'] // <- Pon aquí el número del bot/staff sin +
+const admins = ['51936994155@s.whatsapp.net'] // <- Pon aquí el número del bot/staff sin +
 
 const loadDB = () => fs.existsSync(dbFile)? JSON.parse(fs.readFileSync(dbFile)) : { dias: {} }
 const saveDB = (data) => fs.writeFileSync(dbFile, JSON.stringify(data, null, 2))
