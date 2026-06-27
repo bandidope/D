@@ -33,7 +33,7 @@ let handler = async (m, { conn, text, args, isOwner }) => {
 
   // =====.sorteo eliminar =====
   if(sub === 'eliminar'){
-    if(!isAdmin) return m.reply('⚠️ Solo los administradores pueden eliminar.')
+    if(!isOwner) return m.reply('⚠️ Solo los administradores pueden eliminar.')
     if(args[1]!== 'si') return m.reply(`⚠️ *PELIGRO*\nEscribe:.sorteo eliminar si\npara borrar TODO.`)
     global.db.data.sorteo = {lunes:[], martes:[], miercoles:[], jueves:[], viernes:[], sabado:[], domingo:[]}
     await global.db.write()
