@@ -1,23 +1,34 @@
-let handler = async (m, { conn, text, command }) => {
-let id = text ? text : m.chat  
-let chat = global.db.data.chats[m.chat]
-chat.welcome = false
+let handler = async (m, { conn, text }) => {
+  if (!global.owner.some(([id]) => id === m.sender.split('@')[0])) throw '❌ Solo el Owner'
 
-let despedida = `┏━━━━━━━━━━━━━━┓\n┃  👟 *STORM BOT* \n┗━━━━━━━━━━━━━━┛\n\n`
-despedida += `🚩 *NOTIFICACIÓN:* El Bot abandonará este grupo.\n\n`
-despedida += `Fue un placer estar aquí con ustedes. ¡Adiós! ✌️`
+  let id = text? text : m.chat
+  let chat = global.db.data.chats[id] || {}
+  const marca = 'For Three Bot' // <-- Tu marca
 
-await conn.reply(id, despedida) 
-await conn.groupLeave(id)
+  try {
+    if (global.db.data.chats[id]) chat.welcome = false
 
-try {  
-chat.welcome = true
-} catch (e) {
-console.log(e)
-}}
+    let ownerMention = `@${m.sender.split('@')[0]}`
+    let txt = `🚩 *${marca} 🌀* Abandona El Grupo\nFué Genial Estar Aquí ${ownerMention} 👋`
+
+    await conn.reply(id, txt, null, { mentions: [m.sender] }) // Te menciona al salir
+    await delay(1500)
+    await conn.groupLeave(id)
+
+    if (global.db.data.chats[m.chat]) global.db.data.chats[m.chat].welcome = true
+
+  } catch (e) {
+    console.log(e)
+    await m.reply(`❌ Error: ${e.message || e}`)
+    if (global.db.data.chats[m.chat]) global.db.data.chats[m.chat].welcome = true
+  }
+}
 
 handler.command = /^(salir|leavegc|salirdelgrupo|leave)$/i
 handler.group = true
 handler.rowner = true
+handler.help = ['salir [id]']
+handler.tags = ['owner']
 
+const delay = ms => new Promise(res => setTimeout(res, ms))
 export default handler
