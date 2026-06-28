@@ -9,7 +9,7 @@ const clockString = ms => {
 
 const saludarSegunHora = () => {
   const hora = new Date().getHours();
-  if (hora >= 5 && hora < 12) return '🌅 ¡Buenos días!';
+  if (hora >= 5 && hora < 12) return '🌞 ¡Buenos días!';
   if (hora >= 12 && hora < 19) return '☀️ ¡Buenas tardes!';
   return '🌙 ¡Buenas noches!';
 };
@@ -38,23 +38,23 @@ const handler = async (m, { conn, usedPrefix }) => {
       }
     }
 
-    let menu = `╭─♡─✧─♡─✧─♡─✧─♡─╮\n`;
-    menu += ` ${saludo} ${tag} ✨\n`;
-    menu += `╰─♡─✧─♡─✧─♡─✧─♡─╯\n\n`;
-    menu += `❀ STORM BOT ࿐ྂ 🇦🇱\n`;
-    menu += `╰─➤ Creador: Whois Yallico\n`;
-    menu += `╰─➤ Nivel: ${level} ✧ Exp: ${exp - min}/${xp}\n`;
-    menu += `╰─➤ Activo: ${uptime}\n`;
-    menu += `╰─➤ Usuarios: ${totalreg}\n\n`;
+    let menu = `${saludo} ${tag} ✨\n\n`;
+    menu += `︵᷼     ⿻ *For Three* ࣪   ࣭ ࣪ *Wa Bot* ࣭  🌀 ࣪\n`;
+    menu += `✿ *Hᴏʟᴀ ${tag}*\n*${saludo}*\n`;
+    menu += `> ꒰꛱ ͜Desarrollado por *Whois Yallico* +51 936 994 155\n`;
+    menu += `𓈒𓏸🌴 *Bot Name:* For Three Bot 🇵🇪\n`;
+    menu += `𓈒𓏸🌵 *Nivel:* ${level} | *Exp:* ${exp - min}/${xp}\n`;
+    menu += `𓈒𓏸🌵 *Activo:* ${uptime}\n`;
+    menu += `𓈒𓏸🌵 *Comprar:* .comprar\n`;
+    menu += `𓈒𓏸🍃 *Usuarios:* ${totalreg}\n\n`;
+    menu += `> 😸 Si encuentra un comando con errores no dudes en reportarlo con el Creador\n`;
 
     for (const [category, cmds] of Object.entries(categorizedCommands)) {
       if (cmds.length > 0) {
-        menu += `◆─〔 ${category.toUpperCase()} 〕\n`;
-        menu += cmds.map(cmd => `├─ ${cmd}`).join('\n') + '\n╰─────────\n\n';
+        menu += `𓈒𓏸❀ *${category.toUpperCase()}*\n`;
+        menu += cmds.map(cmd => `│ ◦ ${cmd}`).join('\n') + '\n\n';
       }
     }
-
-    menu += `> 😸 Repórta errores con el Creador +51 936 994 155\n`;
 
     await conn.sendMessage(m.chat, {
       image: { url: imgMenu },
