@@ -1,41 +1,22 @@
-// Plugin: Hidetag / Notify V4
-// .n responde a un mensaje = lo reenvía + tag a todos
-// By I'm Criss XYZ
-
-let handler = async (m, { conn, text, participants, isAdmin, isOwner }) => {
-  if (!isAdmin &&!isOwner) throw '❌ *Solo admins*'
-
-  let users = participants.map(u => conn.decodeJid(u.id)).slice(0, 200) // Anti-ban
-  let q = m.quoted? m.quoted : null
-  
-  if (!q) return m.reply('❌ Responde a un mensaje/foto/video con *.n* para reenviarlo')
-
-  let htext = text? `\n\n${text}` : '' // Tu texto extra va abajo
-
-  // CLONA el mensaje citado con todas las menciones
-  await conn.copyNForward(m.chat, q.fakeObj, false, {
-    mentions: users,
-    contextInfo: {
-      mentionedJid: users,
-      forwardingScore: 256,
-      isForwarded: true
+let handler = async (m, { conn, text, participants }) => {
+  const mime = m.mtype
+  const type = /imageMessage|videoMessage|conversation|extendedTextMessage/.test(mime)
+  if (!m.quoted && type) {
+    if ((mime === 'imageMessage')) {
+      conn.sendMessage(m.chat, { image: await m.download?.(), mentions: participants.map(u => conn.decodeJid(u.id)), caption: text ? text : "", mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m });
+    } else if ((mime === 'videoMessage')) {
+      conn.sendMessage(m.chat, { video: await m.download?.(), mentions: participants.map(u => conn.decodeJid(u.id)), mimetype: 'video/mp4', caption: text ? text : "" }, { quoted: m })
+    } else if ((mime === ("conversation") || ("extendedTextMessage"))) {
+      conn.sendMessage(m.chat, { text: text ? text : "Pᴏʀɴʜᴜʙ: @whoís.yallico", mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m })
     }
-  })
-
-  // Si pusiste texto después de .n, lo manda aparte mencionando
-  if (text) {
-    await conn.sendMessage(m.chat, { 
-      text: `> ${users.map(v => '@' + v.split('@')[0]).join(' ')}${htext}`,
-      mentions: users 
-    })
+  } else if (m.quoted) {
+    await conn.sendMessage(m.chat, { forward: m.quoted.fakeObj, mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m })
   }
 }
-
-handler.help = ['n <texto opcional>']
+handler.help = ['notify', 'hidetag']
 handler.tags = ['grupo']
-handler.command = /^(n|hidetag|notify|noti|aviso)$/i
-handler.admin = true 
+handler.command = ['hidetag', 'notify', 'n', 'noti', 'notificar', 'notif', 'aviso', 'avisar',]
 handler.group = true
-handler.botAdmin = false
+handler.admin = true
 
 export default handler
