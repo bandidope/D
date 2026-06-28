@@ -4,7 +4,7 @@
 
 const handler = async (m, { isOwner, isAdmin, conn, text, participants, args, command, usedPrefix }) => {
   if (usedPrefix == 'a' || usedPrefix == 'A') return;
-  if (!(isAdmin || isOwner)) throw '❌ *Solo administradores* by I\'m Criss XYZ'
+  if (!(isAdmin || isOwner)) throw '❌ *Solo administradores*'
 
   const customEmoji = global.db.data.chats[m.chat]?.customEmoji || '🌀'
   m.react(customEmoji)
