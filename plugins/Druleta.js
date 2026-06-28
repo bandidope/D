@@ -1,4 +1,4 @@
-// Plugin: Ruleta Aleatoria by I'm Criss XYZ - V2 FIX
+// Plugin: Ruleta Aleatoria Fix
 // Sin bloqueo de grupo | Solo Admins
 
 let ruletaDB = global.db.data.ruleta || (global.db.data.ruleta = {})
@@ -6,7 +6,7 @@ let ruletaDB = global.db.data.ruleta || (global.db.data.ruleta = {})
 const Emojis = ['🟥', '🟦', '🟩', '🟨', '🟪', '🟧', '🟫', '⬛']
 
 let handler = async (m, { conn, args, command, isAdmin }) => {
-    if (!isAdmin) throw '❌ *Solo administradores del grupo* by I\'m Criss XYZ'
+    if (!isAdmin) throw '❌ *Solo administradores del grupo*'
 
     let chatId = m.chat
     ruletaDB[chatId]??= []
