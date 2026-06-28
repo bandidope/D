@@ -1,50 +1,41 @@
-// Plugin: Hidetag / Notify by I'm Criss XYZ
-// V2 Optimizado | Anti-Crash | Solo Admins
-// Comandos: #hidetag #notify #n #aviso #avisar #noti #notificar #notif
+// Plugin: Hidetag / Notify V4
+// .n responde a un mensaje = lo reenvía + tag a todos
+// By I'm Criss XYZ
 
-let handler = async (m, { conn, text, participants, isAdmin }) => {
-  if (!isAdmin) throw '❌ *Solo administradores* by I\'m Criss XYZ'
+let handler = async (m, { conn, text, participants, isAdmin, isOwner }) => {
+  if (!isAdmin &&!isOwner) throw '❌ *Solo admins*'
 
-  let users = participants.map(u => conn.decodeJid(u.id))
-  let q = m.quoted? m.quoted : m
-  let mime = (q.msg || q).mimetype || q.mediaType || ''
-  let isMedia = /image|video|sticker|audio/.test(mime)
-  let htext = text? text : '🔔 *Notificación para todos*'
+  let users = participants.map(u => conn.decodeJid(u.id)).slice(0, 200) // Anti-ban
+  let q = m.quoted? m.quoted : null
+  
+  if (!q) return m.reply('❌ Responde a un mensaje/foto/video con *.n* para reenviarlo')
 
-  try {
-    if (isMedia && q.download) {
-      let media = await q.download?.()
-      let type = mime.split('/')[0]
+  let htext = text? `\n\n${text}` : '' // Tu texto extra va abajo
 
-      if (type === 'sticker') {
-        // Los stickers no aceptan caption, se manda aparte
-        await conn.sendMessage(m.chat, { sticker: media }, { quoted: m })
-        await conn.sendMessage(m.chat, { text: htext, mentions: users }, { quoted: m })
-      } else {
-        await conn.sendMessage(m.chat, {
-          [type]: media,
-          caption: htext,
-          mentions: users
-        }, { quoted: m })
-      }
-    } else {
-      // Solo texto
-      await conn.sendMessage(m.chat, {
-        text: htext,
-        mentions: users
-      }, { quoted: m })
+  // CLONA el mensaje citado con todas las menciones
+  await conn.copyNForward(m.chat, q.fakeObj, false, {
+    mentions: users,
+    contextInfo: {
+      mentionedJid: users,
+      forwardingScore: 256,
+      isForwarded: true
     }
-  } catch (e) {
-    console.log(e)
-    // Si falla la media, manda solo texto mencionando a todos
-    await conn.sendMessage(m.chat, { text: htext, mentions: users }, { quoted: m })
+  })
+
+  // Si pusiste texto después de .n, lo manda aparte mencionando
+  if (text) {
+    await conn.sendMessage(m.chat, { 
+      text: `> ${users.map(v => '@' + v.split('@')[0]).join(' ')}${htext}`,
+      mentions: users 
+    })
   }
 }
 
-handler.help = ['hidetag', 'notify', 'n', 'aviso']
+handler.help = ['n <texto opcional>']
 handler.tags = ['grupo']
-handler.command = /^(hidetag|notify|n|noti|notificar|notif|aviso|avisar)$/i
-handler.admin = true
+handler.command = /^(n|hidetag|notify|noti|aviso)$/i
+handler.admin = true 
 handler.group = true
+handler.botAdmin = false
 
 export default handler
