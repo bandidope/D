@@ -1,12 +1,10 @@
 import axios from 'axios'
 import jimp from 'jimp' // npm i jimp
 
-// Lista de textos random para "Cuando..."
 const frases = [
-  'Cuando te dicen: es la última',
+  'Cuando pides',
   'Cuando entras al grupo y hay 999+',
   'Cuando tu ex te ve online',
-  'Cuando pides saldo y te dejan en visto',
   'Cuando el profe dice: examen sorpresa',
   'Cuando For Three Bot 🌀 entra al grupo'
 ]
@@ -23,12 +21,25 @@ let handler = async (m, { conn }) => {
   let face = await jimp.read(ppBuffer)
   face.circle()
 
-  // 2. Memes con coords + fuente para texto
+  // 2. Memes ACTUALIZADOS - Links 2026 que sí jalan
   let memes = [
-    { template: 'https://i.imgur.com/8KmNpWZ.png', x: 120, y: 80, w: 280, h: 280, textY: 20 }, // Crying
-    { template: 'https://i.imgur.com/4k4H6jG.png', x: 100, y: 50, w: 300, h: 300, textY: 15 }, // Gigachad
-    { template: 'https://i.imgur.com/v4zYQZb.png', x: 45, y: 45, w: 200, h: 200, textY: 10 } // Drake
+    {
+      name: 'Cuando pides',
+      template: 'https://i.imgur.com/5K1v8mR.png', // <- Tu meme
+      x: 80, y: 120, w: 200, h: 200, textY: 25 
+    },
+    {
+      name: 'Crying',
+      template: 'https://i.imgur.com/W8f1z8Q.png', // Crying nuevo
+      x: 120, y: 80, w: 280, h: 280, textY: 20 
+    },
+    {
+      name: 'Gigachad',
+      template: 'https://i.imgur.com/2x3bH8k.png', // Gigachad nuevo
+      x: 100, y: 50, w: 300, h: 300, textY: 15 
+    }
   ]
+  
   let meme = memes[Math.floor(Math.random() * memes.length)]
   let base = await jimp.read(meme.template)
 
@@ -36,12 +47,11 @@ let handler = async (m, { conn }) => {
   face.resize(meme.w, meme.h)
   base.composite(face, meme.x, meme.y)
 
-  // 4. Poner texto arriba estilo meme
-  const font = await jimp.loadFont(jimp.FONT_SANS_32_WHITE) // Fuente blanca grande
+  // 4. Texto arriba con contorno
+  const font = await jimp.loadFont(jimp.FONT_SANS_32_WHITE)
+  const stroke = await jimp.loadFont(jimp.FONT_SANS_32_BLACK)
   const frase = frases[Math.floor(Math.random() * frases.length)]
 
-  // Contorno negro para que se lea
-  const stroke = await jimp.loadFont(jimp.FONT_SANS_32_BLACK)
   base.print(stroke, 2, meme.textY + 2, { text: frase, alignmentX: jimp.HORIZONTAL_ALIGN_CENTER }, base.bitmap.width)
   base.print(font, 0, meme.textY, { text: frase, alignmentX: jimp.HORIZONTAL_ALIGN_CENTER }, base.bitmap.width)
 
@@ -49,7 +59,7 @@ let handler = async (m, { conn }) => {
 
   await conn.sendMessage(m.chat, {
     image: buffer,
-    caption: `🤣 @${who.split('@')[0]}`,
+    caption: `🤣 *${meme.name}*\n@${who.split('@')[0]}`,
     mentions: [who]
   }, { quoted: m })
 }
