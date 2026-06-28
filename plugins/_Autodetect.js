@@ -1,36 +1,33 @@
-import chalk from 'chalk'
 import fetch from 'node-fetch'
-import ws from 'ws'
-let WAMessageStubType = (await import('@whiskeysockets/baileys')).default
-import { readdirSync, unlinkSync, existsSync, promises as fs, rmSync} from 'fs'
-import path from 'path'
 
 let handler = m => m
-handler.before = async function (m, { conn, participants, groupMetadata}) {
-    if (!m.messageStubType || !m.isGroup) return
+handler.before = async function (m, { conn }) {
+    if (!m.messageStubType ||!m.isGroup) return
+
+    const marca = '*𝐅𝐨𝐫 𝐓𝐡𝐫𝐞 𝐁𝐨𝐭🌀*' // <-- Tu marca
 
     const fkontak = {
         key: {
             participants: "0@s.whatsapp.net",
             remoteJid: "status@broadcast",
             fromMe: false,
-            id: "DidierMenu"
+            id: "ForThreeBot"
         },
         message: {
             locationMessage: {
-                name: "*𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭🌀*",
+                name: marca,
                 jpegThumbnail: await (await fetch('https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png')).buffer(),
                 vcard:
                     "BEGIN:VCARD\n" +
                     "VERSION:3.0\n" +
-                    "N:;Didier Bot;;;\n" +
-                    "FN:𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀\n" +
-                    "ORG:Didier Developers\n" +
+                    "N:;For Three Bot;;;\n" +
+                    "FN:For Three Bot 🌀\n" +
+                    "ORG:For Three Developers\n" +
                     "TITLE:\n" +
-                    "item1.TEL;waid=51936994155:+51 936 994 15t\n" +
-                    "item1.X-ABLabel:Didier\n" +
+                    "item1.TEL;waid=51936994155:+51 936 994 155\n" + // FIX 1: Le quité la 't'
+                    "item1.X-ABLabel:For Three Bot\n" +
                     "X-WA-BIZ-DESCRIPTION:🚀 Notificador oficial de actividad grupal.\n" +
-                    "X-WA-BIZ-NAME:𝐅𝐨𝐫 𝐓𝐡𝐫𝐞𝐞 𝐁𝐨𝐭 🌀\n" +
+                    "X-WA-BIZ-NAME:For Three Bot 🌀\n" +
                     "END:VCARD"
             }
         },
@@ -38,39 +35,42 @@ handler.before = async function (m, { conn, participants, groupMetadata}) {
     }
 
     let chat = global.db.data.chats[m.chat]
+    if (!chat.detect) return // Si está apagado, no hace nada
+
     let usuario = `@${m.sender.split`@`[0]}`
-    let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'
+    let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png')
 
-    // Mensajes de detección en español
-    let nombre = `> ✨ ${usuario} *ha cambiado el nombre del grupo* ✨\n\n> 📝 *Nuevo nombre:* _${m.messageStubParameters[0]}_`
-    let foto = `> 📸 *¡Nueva foto de grupo!* 📸\n\n> 💫 Acción realizada por: ${usuario}`
-    let edit = `> ⚙️ ${usuario} ha ajustado la configuración del grupo.\n\n> 🔒 Ahora *${m.messageStubParameters[0] == 'on' ? 'solo los administradores' : 'todos'}* pueden configurar el grupo.`
-    let newlink = `> 🔗 *¡El enlace del grupo ha sido restablecido!* 🔗\n\n> 💫 Acción realizada por: ${usuario}`
-    let status = `> 🗣️ El grupo ha sido *${m.messageStubParameters[0] == 'on' ? 'cerrado' : 'abierto'}* por ${usuario}!\n\n> 💬 Ahora *${m.messageStubParameters[0] == 'on' ? 'solo los administradores' : 'todos'}* pueden enviar mensajes.`
-    let admingp = `> 👑 @${m.messageStubParameters[0].split`@`[0]} *¡Ahora es administrador del grupo!* 👑\n\n> 💫 Acción realizada por: ${usuario}`
-    let noadmingp = `> 🗑️ @${m.messageStubParameters[0].split`@`[0]} *ha dejado de ser administrador.* 🗑️\n\n> 💫 Acción realizada por: ${usuario}`
+    let text, mentions = [m.sender]
 
-    if (chat.detect && m.messageStubType == 21) {
-        await this.sendMessage(m.chat, { text: nombre, mentions: [m.sender]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 22) {
-        await this.sendMessage(m.chat, { image: { url: pp}, caption: foto, mentions: [m.sender]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 23) {
-        await this.sendMessage(m.chat, { text: newlink, mentions: [m.sender]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 25) {
-        await this.sendMessage(m.chat, { text: edit, mentions: [m.sender]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 26) {
-        await this.sendMessage(m.chat, { text: status, mentions: [m.sender]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 29) {
-        await this.sendMessage(m.chat, { text: admingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`]}, { quoted: fkontak})
-    } else if (chat.detect && m.messageStubType == 30) {
-        await this.sendMessage(m.chat, { text: noadmingp, mentions: [`${m.sender}`,`${m.messageStubParameters[0]}`]}, { quoted: fkontak})
-    } else {
-        console.log({
-            messageStubType: m.messageStubType,
-            messageStubParameters: m.messageStubParameters,
-            type: WAMessageStubType[m.messageStubType],
-        })
+    switch (m.messageStubType) {
+        case 21: // Cambiar nombre
+            text = `> ✨ ${usuario} *ha cambiado el nombre del grupo* ✨\n\n> 📝 *Nuevo nombre:* _${m.messageStubParameters[0]}_`
+            break
+        case 22: // Cambiar foto
+            return await conn.sendMessage(m.chat, { image: { url: pp }, caption: `> 📸 *¡Nueva foto de grupo!* 📸\n\n> 💫 Acción realizada por: ${usuario}`, mentions }, { quoted: fkontak })
+        case 23: // Nuevo link
+            text = `> 🔗 *¡El enlace del grupo ha sido restablecido!* 🔗\n\n> 💫 Acción realizada por: ${usuario}`
+            break
+        case 25: // Cambiar ajustes
+            text = `> ⚙️ ${usuario} ha ajustado la configuración del grupo.\n\n> 🔒 Ahora *${m.messageStubParameters[0] == 'on'? 'solo los administradores' : 'todos'}* pueden configurar el grupo.`
+            break
+        case 26: // Cerrar/Abrir grupo
+            text = `> 🗣️ El grupo ha sido *${m.messageStubParameters[0] == 'on'? 'cerrado' : 'abierto'}* por ${usuario}!\n\n> 💬 Ahora *${m.messageStubParameters[0] == 'on'? 'solo los administradores' : 'todos'}* pueden enviar mensajes.`
+            break
+        case 29: // Dar admin
+            text = `> 👑 @${m.messageStubParameters[0].split`@`[0]} *¡Ahora es administrador del grupo!* 👑\n\n> 💫 Acción realizada por: ${usuario}`
+            mentions.push(m.messageStubParameters[0])
+            break
+        case 30: // Quitar admin
+            text = `> 🗑️ @${m.messageStubParameters[0].split`@`[0]} *ha dejado de ser administrador.* 🗑️\n\n> 💫 Acción realizada por: ${usuario}`
+            mentions.push(m.messageStubParameters[0])
+            break
+        default:
+            return // FIX 2: Ya no loguea todo, solo lo que importa
     }
+
+    if (text) await conn.sendMessage(m.chat, { text, mentions }, { quoted: fkontak }) // FIX 3: conn en vez de this
 }
 
+handler.command = /^(detect)$/i
 export default handler
