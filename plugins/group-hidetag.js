@@ -1,22 +1,50 @@
-let handler = async (m, { conn, text, participants }) => {
-  const mime = m.mtype
-  const type = /imageMessage|videoMessage|conversation|extendedTextMessage/.test(mime)
-  if (!m.quoted && type) {
-    if ((mime === 'imageMessage')) {
-      conn.sendMessage(m.chat, { image: await m.download?.(), mentions: participants.map(u => conn.decodeJid(u.id)), caption: text ? text : "", mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m });
-    } else if ((mime === 'videoMessage')) {
-      conn.sendMessage(m.chat, { video: await m.download?.(), mentions: participants.map(u => conn.decodeJid(u.id)), mimetype: 'video/mp4', caption: text ? text : "" }, { quoted: m })
-    } else if ((mime === ("conversation") || ("extendedTextMessage"))) {
-      conn.sendMessage(m.chat, { text: text ? text : "Pᴏʀɴʜᴜʙ: @whoís.yallico", mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m })
+// Plugin: Hidetag / Notify by I'm Criss XYZ
+// V2 Optimizado | Anti-Crash | Solo Admins
+// Comandos: #hidetag #notify #n #aviso #avisar #noti #notificar #notif
+
+let handler = async (m, { conn, text, participants, isAdmin }) => {
+  if (!isAdmin) throw '❌ *Solo administradores* by I\'m Criss XYZ'
+
+  let users = participants.map(u => conn.decodeJid(u.id))
+  let q = m.quoted? m.quoted : m
+  let mime = (q.msg || q).mimetype || q.mediaType || ''
+  let isMedia = /image|video|sticker|audio/.test(mime)
+  let htext = text? text : '🔔 *Notificación para todos*'
+
+  try {
+    if (isMedia && q.download) {
+      let media = await q.download?.()
+      let type = mime.split('/')[0]
+
+      if (type === 'sticker') {
+        // Los stickers no aceptan caption, se manda aparte
+        await conn.sendMessage(m.chat, { sticker: media }, { quoted: m })
+        await conn.sendMessage(m.chat, { text: htext, mentions: users }, { quoted: m })
+      } else {
+        await conn.sendMessage(m.chat, {
+          [type]: media,
+          caption: htext,
+          mentions: users
+        }, { quoted: m })
+      }
+    } else {
+      // Solo texto
+      await conn.sendMessage(m.chat, {
+        text: htext,
+        mentions: users
+      }, { quoted: m })
     }
-  } else if (m.quoted) {
-    await conn.sendMessage(m.chat, { forward: m.quoted.fakeObj, mentions: participants.map(u => conn.decodeJid(u.id)) }, { quoted: m })
+  } catch (e) {
+    console.log(e)
+    // Si falla la media, manda solo texto mencionando a todos
+    await conn.sendMessage(m.chat, { text: htext, mentions: users }, { quoted: m })
   }
 }
-handler.help = ['notify', 'hidetag']
+
+handler.help = ['hidetag', 'notify', 'n', 'aviso']
 handler.tags = ['grupo']
-handler.command = ['hidetag', 'notify', 'n', 'noti', 'notificar', 'notif', 'aviso', 'avisar',]
-handler.group = true
+handler.command = /^(hidetag|notify|n|noti|notificar|notif|aviso|avisar)$/i
 handler.admin = true
+handler.group = true
 
 export default handler
