@@ -1,0 +1,44 @@
+import fetch from 'node-fetch'
+
+export async function before(m, { conn, participants, groupMetadata }) {
+    if (!m.isGroup) return // Solo grupos
+    
+    const marca = '*𝐅𝐨𝐫 𝐓𝐡𝐫𝐞 𝐁𝐨𝐭🌀*'
+
+    const fkontak = {
+        key: { participants: "0@s.whatsapp.net", remoteJid: "status@broadcast", fromMe: false, id: "FTB" },
+        message: { contactMessage: { displayName: marca, vcard: "BEGIN:VCARD\nVERSION:3.0\nFN:For Three Bot 🌀\nEND:VCARD" } },
+        participant: "0@s.whatsapp.net"
+    }
+
+    for (let user of participants) {
+        let pp = await conn.profilePictureUrl(user, 'image').catch(_ => 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png')
+        let userMention = `@${user.split`@`[0]}`
+        
+        // 1. BIENVENIDA - cuando entra alguien
+        if (user.action == 'add' || user.action == 'invite') {
+            let text = `> 👋 *Bienvenido(a) al grupo* ${userMention}\n\n` +
+                       `> 📛 *Grupo:* ${groupMetadata.subject}\n` +
+                       `> 👥 *Miembros:* ${groupMetadata.participants.length}\n\n` +
+                       `> 🌀 ${marca} activo y vigilando`
+            
+            await conn.sendMessage(m.chat, { 
+                image: { url: pp }, 
+                caption: text, 
+                mentions:  
+            }, { quoted: fkontak })
+        }
+
+        // 2. DESPEDIDA - cuando se sale o lo sacan [Bonus]
+        if (user.action == 'remove' || user.action == 'leave') {
+            let text = `> 👋 *Se fue del grupo* ${userMention}\n\n` +
+                       `> 🌀 ${marca} lo recordará`
+            
+            await conn.sendMessage(m.chat, { 
+                text, 
+                mentions:  
+            }, { quoted: fkontak })
+        }
+    }
+}
+export default () => true
