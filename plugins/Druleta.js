@@ -1,60 +1,85 @@
+// Plugin: Ruleta Aleatoria by I'm Criss XYZ
+// Optimizado | Solo Texto | Solo Admins
+// Comandos: #addrl #delusrl #spinrl #clearrl #listrl
+
 let ruletaDB = global.db.data.ruleta || (global.db.data.ruleta = {})
 
-let handler = async (m, { conn, args, usedPrefix, command, isAdmin, isBotAdmin }) => {
-    if (!isAdmin) throw '❌ Solo admins del grupo pueden usar la ruleta'
-    if (!isBotAdmin) throw '❌ Necesito ser admin para borrar mensajes'
+const Emojis = ['🟥', '🟦', '🟩', '🟨', '🟪', '🟧', '🟫', '⬛'] // Simula los gajos de la ruleta
+
+let handler = async (m, { conn, args, command, isAdmin, isGroup }) => {
+    if (!isGroup) throw '❌ Este comando solo funciona en grupos'
+    if (!isAdmin) throw '❌ *Solo administradores del grupo* by I\'m Criss XYZ'
 
     let chatId = m.chat
-    if (!ruletaDB[chatId]) ruletaDB[chatId] = []
+    ruletaDB[chatId]??= [] // Crea la ruleta si no existe
+
+    let texto = args.join(' ').trim()
 
     switch (command) {
         case 'addrl': {
-            let who = m.mentionedJid[0] || (m.quoted? m.quoted.sender : null)
-            if (!who) throw `ꕤ *Uso:* #addrl @tag\nAgrega a alguien a la ruleta`
-            if (ruletaDB[chatId].includes(who)) throw '⚠️ Ya está en la ruleta'
-            ruletaDB[chatId].push(who)
-            m.reply(`✅ Se agregó 1 usuario a la ruleta.\nTotal: ${ruletaDB[chatId].length}`)
+            if (!texto) throw `ꕤ *Uso:* #addrl Nombre1 / Nombre2 / Nombre3\n*Ejemplo:* #addrl Whois / Lu / Romi`
+
+            let nombres = [...new Set(texto.split('/').map(v => v.trim()).filter(v => v))] // Separa por / y quita duplicados
+            if (nombres.length === 0) throw 'Mete al menos 1 nombre'
+
+            let agregados = []
+            for (let name of nombres) {
+                if (!ruletaDB[chatId].some(v => v.toLowerCase() === name.toLowerCase())) {
+                    ruletaDB[chatId].push(name)
+                    agregados.push(name)
+                }
+            }
+
+            if (agregados.length === 0) throw '⚠️ Todos esos nombres ya estaban en la ruleta'
+
+            let lista = ruletaDB[chatId].map((v,i) => `${Emojis[i % Emojis.length]} ${v}`).join('\n')
+            m.reply(`✅ *Agregados:* ${agregados.join(', ')}\n\n╭━━〔 *🎡 RULETA ACTUAL* 〕━━┈⊷\n${lista}\n╰ *Total:* ${ruletaDB[chatId].length} participantes`)
         }
         break
 
         case 'delusrl': {
-            let who = m.mentionedJid[0] || (m.quoted? m.quoted.sender : null)
-            if (!who) throw `ꕤ *Uso:* #delusrl @tag`
-            ruletaDB[chatId] = ruletaDB[chatId].filter(v => v!== who)
-            m.reply(`🗑️ Usuario quitado. Total: ${ruletaDB[chatId].length}`)
+            if (!texto) throw `ꕤ *Uso:* #delusrl Nombre\n*Ejemplo:* #delusrl Lu`
+            let antes = ruletaDB[chatId].length
+            ruletaDB[chatId] = ruletaDB[chatId].filter(v => v.toLowerCase()!== texto.toLowerCase())
+            if (ruletaDB[chatId].length === antes) throw `⚠️ ${texto} no está en la ruleta`
+            m.reply(`🗑️ *Quitado:* ${texto}\n*Restantes:* ${ruletaDB[chatId].length}`)
+        }
+        break
+
+        case 'listrl': {
+            if (ruletaDB[chatId].length === 0) throw '🧹 La ruleta está vacía'
+            let lista = ruletaDB[chatId].map((v,i) => `${Emojis[i % Emojis.length]} ${v}`).join('\n')
+            m.reply(`╭━━〔 *🎡 PARTICIPANTES* 〕━━┈⊷\n${lista}\n╰ *Total:* ${ruletaDB[chatId].length}`)
         }
         break
 
         case 'spinrl': {
-            if (ruletaDB[chatId].length < 2) throw '❌ Mínimo 2 personas en la ruleta'
+            if (ruletaDB[chatId].length < 2) throw '❌ *Mínimo 2 personas en la ruleta*'
 
-            await conn.reply(m.chat, '🔄 *La ruleta se está girando...*', m)
-            await delay(3000)
+            let ruletaVisual = ruletaDB[chatId].map((v,i) => `${Emojis[i % Emojis.length]} ${v}`).join('\n')
+            await conn.reply(m.chat, `🎡 *Girando la ruleta...*\n\n${ruletaVisual}`, m)
+            await delay(2000 + Math.random() * 1500) // Animación 2-3.5s random
 
-            let ganador = ruletaDB[chatId][Math.floor(Math.random() * ruletaDB[chatId].length)]
-            let nombres = ruletaDB[chatId].map(jid => `@${jid.split('@')[0]}`).join('\n')
+            let idx = Math.floor(Math.random() * ruletaDB[chatId].length)
+            let ganador = ruletaDB[chatId].splice(idx, 1)[0] // Saca y elimina al ganador
 
-            // Aquí se generaría la imagen de la ruleta como en tu captura
-            await conn.reply(m.chat, `🎡 *Ruleta Girada!*\n\nParticipantes:\n${nombres}\n\n🏆 Ganador: @${ganador.split('@')[0]}`, m, { mentions: [ganador,...ruletaDB[chatId]] })
-
-            // Elimina al ganador como en tu #spinrl
-            ruletaDB[chatId] = ruletaDB[chatId].filter(v => v!== ganador)
+            m.reply(`╭━━〔 *🎯 RESULTADO* 〕━━┈⊷\n┃\n┃ 🏆 *GANADOR:* *${ganador}*\n┃\n┃ Participantes restantes: ${ruletaDB[chatId].length}\n╰━━━━━━━━━━┈⊷`)
         }
         break
 
         case 'clearrl': {
             ruletaDB[chatId] = []
-            m.reply('🧹 Ruleta borrada. Puedes crear otra.')
+            m.reply('🧹 *Ruleta borrada por completo.*\nPuedes crear una nueva con #addrl')
         }
         break
     }
 }
 
-handler.command = ['addrl', 'delusrl', 'spinrl', 'clearrl']
+handler.help = ['addrl', 'delusrl', 'spinrl', 'clearrl', 'listrl']
+handler.tags = ['sorteos']
+handler.command = /^(addrl|delusrl|spinrl|clearrl|listrl)$/i
 handler.admin = true
-handler.botAdmin = true
 handler.group = true
 
 export default handler
-
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
