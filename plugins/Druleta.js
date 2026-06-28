@@ -79,7 +79,7 @@ handler.help = ['addrl', 'delusrl', 'spinrl', 'clearrl', 'listrl']
 handler.tags = ['sorteos']
 handler.command = /^(addrl|delusrl|spinrl|clearrl|listrl)$/i
 handler.admin = true
-handler.group = true
+handler.group = false
 
 export default handler
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
