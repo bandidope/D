@@ -25,7 +25,7 @@ let handler = async (m, { conn }) => {
 
 > 😸 Creador: Whois Yallico +51 936 994 155
 
-https://chat.whatsapp.com/Fi6FHZ8VSGnAT7CKJkcd9r?mode=gi_t`
+https://chat.whatsapp.com/LjPhgjqCM934QEzYz3vrVk`
 
     await conn.sendMessage(m.chat, {
       image: { url: imgComprar },
