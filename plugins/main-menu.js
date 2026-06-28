@@ -14,8 +14,8 @@ const saludarSegunHora = () => {
   return '🌙 ¡Buenas noches!';
 };
 
-// Pon acá tu link de Catbox o Imgur del logo de Storm
-const imgMenu = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'; 
+// Tu logo de Vans
+const imgMenu = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png';
 
 const handler = async (m, { conn, usedPrefix }) => {
   try {
@@ -38,23 +38,23 @@ const handler = async (m, { conn, usedPrefix }) => {
       }
     }
 
-    let menu = `${saludo} ${tag} ✨\n\n`;
-    menu += `︵᷼     ⿻ *Storm* ࣪   ࣭ ࣪ *Wa Bot* ࣭  🐈 ࣪\n`;
-    menu += `✿ *Hᴏʟᴀ ${tag}*\n*${saludo}*\n`;
-    menu += `> ꒰꛱ ͜Desarrollado por *Whois Yallico* +51 936 994 155\n`;
-    menu += `𓈒𓏸🌴 *Bot Name:* Storm Bot 🇦🇱\n`;
-    menu += `*𓈒𓏸🌵 *Nivel:* ${level} | *Exp:* ${exp - min}/${xp}\n`;
-    menu += `*𓈒𓏸🌵 *Activo:* ${uptime}\n`;
-    menu += `*𓈒𓏸🍃 *Usuarios:* ${totalreg}\n\n`;
+    let menu = `╭─♡─✧─♡─✧─♡─✧─♡─╮\n`;
+    menu += ` ${saludo} ${tag} ✨\n`;
+    menu += `╰─♡─✧─♡─✧─♡─✧─♡─╯\n\n`;
+    menu += `❀ STORM BOT ࿐ྂ 🇦🇱\n`;
+    menu += `╰─➤ Creador: Whois Yallico\n`;
+    menu += `╰─➤ Nivel: ${level} ✧ Exp: ${exp - min}/${xp}\n`;
+    menu += `╰─➤ Activo: ${uptime}\n`;
+    menu += `╰─➤ Usuarios: ${totalreg}\n\n`;
 
     for (const [category, cmds] of Object.entries(categorizedCommands)) {
       if (cmds.length > 0) {
-        menu += `*❒ ${category.toUpperCase()}*\n`;
-        menu += cmds.map(cmd => `│ ◦ ${cmd}`).join('\n') + '\n\n';
+        menu += `◆─〔 ${category.toUpperCase()} 〕\n`;
+        menu += cmds.map(cmd => `├─ ${cmd}`).join('\n') + '\n╰─────────\n\n';
       }
     }
-    
-    menu += `> 😸 Si encuentras un comando con errores repórtalo con el Creador\n`;
+
+    menu += `> 😸 Repórta errores con el Creador +51 936 994 155\n`;
 
     await conn.sendMessage(m.chat, {
       image: { url: imgMenu },
@@ -64,8 +64,7 @@ const handler = async (m, { conn, usedPrefix }) => {
 
   } catch (e) {
     console.error('❌ Error en el menú:', e);
-    // Si falla la imagen, manda solo texto
-    await conn.reply(m.chat, `⚠️ Error con la imagen. Te mando el menú en texto:\n\n${menu}`, m);
+    await conn.reply(m.chat, `⚠️ Error al cargar el menú.`, m);
   }
 };
 
