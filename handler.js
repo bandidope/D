@@ -15,12 +15,14 @@ const delay = ms => isNumber(ms) && new Promise(resolve => setTimeout(function (
 
 export async function handler(chatUpdate) {
     this.msgque = this.msgque || []
-    if (!chatUpdate) return
+    if (!chatUpdate)
+        return
     this.pushMessage(chatUpdate.messages).catch(console.error)
     let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-    if (!m) return
+    if (!m)
+        return
 
-    // FILTRO ANTI-STUB V2.1 🌀 -> Esto quita el "Mensaje de undefined"
+    // FILTRO ANTI-STUB V2.2 🌀 -> Quita el spam "Mensaje de undefined"
     if (m.messageStubType) return
     if (!m.message) return
     if (m.key && m.key.remoteJid === 'status@broadcast') return
@@ -30,7 +32,8 @@ export async function handler(chatUpdate) {
         await global.loadDatabase()
     try {
         m = smsg(this, m) || m
-        if (!m) return
+        if (!m)
+            return
         m.exp = 0
         m.limit = false
         try {
@@ -294,3 +297,10 @@ global.dfail = (type, m, conn, usedPrefix) => {
     }[type]
     if (msg) return conn.reply(m.chat, msg, m, rcanal).then(_ => m.react('✖️'))
 }
+
+let file = fileURLToPath(import.meta.url)
+watchFile(file, () => {
+    unwatchFile(file)
+    console.log(chalk.magenta("Se actualizo 'handler.js'"))
+    import(`${file}?update=${Date.now()}`)
+})
