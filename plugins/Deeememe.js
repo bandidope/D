@@ -21,33 +21,40 @@ let handler = async (m, { conn }) => {
   let face = await jimp.read(ppBuffer)
   face.circle()
 
-  // 2. Memes ACTUALIZADOS - Links 2026 que sí jalan
+  // 2. Memes: Tu imagen + 2 más de respaldo
   let memes = [
     {
       name: 'Cuando pides',
-      template: 'https://i.imgur.com/5K1v8mR.png', // <- Tu meme
-      x: 80, y: 120, w: 200, h: 200, textY: 25 
+      template: 'attachment://0', // <- Tu foto subida
+      x: 85, y: 130, w: 190, h: 190, textY: 25 // <- Coords exactas para tu meme
     },
     {
       name: 'Crying',
-      template: 'https://i.imgur.com/W8f1z8Q.png', // Crying nuevo
+      template: 'https://i.imgur.com/W8f1z8Q.png', 
       x: 120, y: 80, w: 280, h: 280, textY: 20 
     },
     {
       name: 'Gigachad',
-      template: 'https://i.imgur.com/2x3bH8k.png', // Gigachad nuevo
+      template: 'https://i.imgur.com/2x3bH8k.png', 
       x: 100, y: 50, w: 300, h: 300, textY: 15 
     }
   ]
   
   let meme = memes[Math.floor(Math.random() * memes.length)]
-  let base = await jimp.read(meme.template)
+  let base
+
+  // Si es tu meme local, lo lee directo. Si es url, lo descarga.
+  if (meme.template.startsWith('attachment://')) {
+    base = await jimp.read('/mnt/data/An-_tOEl0Lr1-tD-Bo9c7uvavpx1NeqwXS0xKa7RBzKl7wf_HVhATTqWPAcf8zq4PWduzvBma24c5jdtEcZ_SQqCn7Ul1N0lTSpnyvLl3T7C-vneLERYqu6G')
+  } else {
+    base = await jimp.read(meme.template)
+  }
 
   // 3. Pegar cara
   face.resize(meme.w, meme.h)
   base.composite(face, meme.x, meme.y)
 
-  // 4. Texto arriba con contorno
+  // 4. Texto arriba
   const font = await jimp.loadFont(jimp.FONT_SANS_32_WHITE)
   const stroke = await jimp.loadFont(jimp.FONT_SANS_32_BLACK)
   const frase = frases[Math.floor(Math.random() * frases.length)]
