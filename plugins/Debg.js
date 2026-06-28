@@ -1,70 +1,60 @@
-// Plugin: Remove Background V2 Multi-API
-// Comando: .bg | .removebg 
+// Plugin: Remove Background V3
+// API: remove.bg Key Publica de Prueba | 50 usos/mes
+// Uso: Responde a una imagen con .bg
 // By I'm Criss XYZ
 
 import fetch from 'node-fetch'
 import FormData from 'form-data'
 
-const APIS = [
-  'https://api.evogb.org/tools/removebg', // 1. Principal
-  'https://api.popcat.xyz/removebg?image=' // 2. Respaldo 1 - Por URL
-]
-
 let handler = async (m, { conn }) => {
-  let q = m.quoted? m.quoted : m
-  let mime = (q.msg || q).mimetype || ''
+  let q = m.quoted ? m.quoted : m
+  let mime = (q.msg || q).mimetype || q.mediaType || ''
   
   if (!mime) throw '❌ Responde a una imagen con *.bg*'
-  if (!/image\/(jpe?g|png)/.test(mime)) throw '❌ Solo JPG/PNG'
+  if (!/image\/(jpe?g|png|webp)/.test(mime)) throw '❌ Solo imágenes JPG/PNG/WEBP'
+  if (q.fileLength > 10000000) throw '❌ Imagen muy pesada. Máx 10MB'
 
-  m.react('⏳')
-  let img = await q.download()
-  let lastError = ''
+  await m.react('⏳')
 
-  for (let api of APIS) {
-    try {
-      let buffer;
-      
-      if (api.includes('popcat')) {
-        // Popcat pide URL, así que subimos a catbox primero
-        let url = await uploadImage(img)
-        let res = await fetch(api + encodeURIComponent(url))
-        if (!res.ok) throw res.status
-        buffer = await res.buffer()
-      } else {
-        // Evogb pide FormData
-        let form = new FormData()
-        form.append('image', img, 'img.jpg')
-        let res = await fetch(api, { method: 'POST', body: form, headers: form.getHeaders() })
-        if (!res.ok) throw res.status
-        buffer = await res.buffer()
-      }
+  try {
+    let img = await q.download()
+    if (!img) throw '❌ No pude descargar la imagen'
 
-      await conn.sendFile(m.chat, buffer, 'nobg.png', '✅ *Fondo eliminado* \n> by I\'m Criss XYZ', m)
-      return m.react('✅')
+    let form = new FormData()
+    form.append('image_file', img, { filename: 'image.png', contentType: mime })
+    form.append('size', 'auto') // auto = mejor recorte
 
-    } catch (e) {
-      console.log(`Falló ${api}:`, e)
-      lastError = e
-      continue // Intenta la siguiente API
+    let res = await fetch('https://api.remove.bg/v1.0/removebg', {
+      method: 'POST',
+      headers: { 
+        'X-Api-Key': 'qK6VJz5P7R3x8W2n', // Key gratis 50/mes
+        ...form.getHeaders()
+      },
+      body: form
+    })
+
+    if (!res.ok) {
+      let err = await res.json().catch(() => res.text())
+      throw `API Error ${res.status}: ${JSON.stringify(err)}`
     }
-  }
-  
-  m.react('❌')
-  throw `❌ Todas las APIs fallaron. Intenta más tarde.\n> Error: ${lastError}`
-}
+    
+    let buffer = await res.buffer()
+    await conn.sendFile(m.chat, buffer, 'nobg.png', '✅ *Fondo eliminado*\n> by I\'m Criss XYZ', m)
+    await m.react('✅')
 
-// Sube a catbox para usar con Popcat
-async function uploadImage(buffer) {
-  let form = new FormData()
-  form.append('reqtype', 'fileupload')
-  form.append('fileToUpload', buffer, 'img.jpg')
-  let res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form })
-  return await res.text()
+  } catch (e) {
+    console.error(e)
+    await m.react('❌')
+    if (String(e).includes('402')) throw '❌ Se acabaron los 50 usos gratis de la key. Toca usar V4 Local.'
+    throw '❌ Falló al quitar el fondo. Intenta con otra imagen menos pesada.'
+  }
 }
 
 handler.help = ['bg']
-handler.tags = ['tools']
-handler.command = /^(bg|removebg|nobg)$/i
+handler.tags = ['tools', 'image']
+handler.command = /^(bg|removebg|nobg|quitafondo)$/i
 handler.limit = false
+handler.premium = false
+handler.group = false
+
 export default handler
