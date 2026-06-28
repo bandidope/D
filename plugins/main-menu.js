@@ -1,118 +1,75 @@
 import { xpRange } from '../lib/levelling.js';
-import axios from 'axios';
 
 const clockString = ms => {
-  const h = Math.floor(ms / 3600000);
-  const m = Math.floor(ms / 60000) % 60;
-  const s = Math.floor(ms / 1000) % 60;
+  const h = isNaN(ms) ? '--' : Math.floor(ms / 3600000);
+  const m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60;
+  const s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60;
   return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
 };
 
 const saludarSegunHora = () => {
   const hora = new Date().getHours();
-  if (hora >= 5 && hora < 12) return '🌅 ¡𝖡𝗎𝖾𝗇𝗈𝗌 𝖽𝗂́𝖺𝗌!';
-  if (hora >= 12 && hora < 19) return '☀️ ¡𝖡𝗎𝖾𝗇𝗈𝗌 𝗍𝖺𝗋𝖽𝖾𝗌!';
-  return '🌙 ¡𝖡𝗎𝖾𝗇𝖺𝗌 𝗇𝗈𝖼𝗁𝖾𝗌!';
+  if (hora >= 5 && hora < 12) return '🌅 ¡Buenos días!';
+  if (hora >= 12 && hora < 19) return '☀️ ¡Buenas tardes!';
+  return '🌙 ¡Buenas noches!';
 };
 
-// Imagen proporcionada y diseño de Vans
-const imgVans = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png';
-const borderTop = '╭╾━━━━╼ 〔 👟 〕 ╾━━━━╼╮';
-const borderBottom = '╰╾━━━━╼ 〔 🛸 〕 ╾━━━━╼╯';
-
-const menuFooter = `
-${borderTop}
-│  🛸 *For Three Bot*
-│  🛠️ *𝖡𝗒 Whois*
-│  🛹 *Team For Three*
-${borderBottom}
-`.trim();
-
-Array.prototype.getRandom = function () {
-  return this[Math.floor(Math.random() * this.length)];
-};
+// Pon acá tu link de Catbox o Imgur del logo de Storm
+const imgMenu = 'https://raw.githubusercontent.com/bandidope/Fotos/refs/heads/master/fotos/logo.png'; 
 
 const handler = async (m, { conn, usedPrefix }) => {
   try {
+    const tag = `@${m.sender.split('@')[0]}`;
     const saludo = saludarSegunHora();
-    const user = global.db.data.users[m.sender] || { level: 1, exp: 0, limit: 5 };
-    const { exp, level, limit } = user;
+    const user = global.db.data.users[m.sender] || {};
+    const { exp = 0, level = 1 } = user;
     const { min, xp } = xpRange(level, global.multiplier || 1);
-    const totalUsers = Object.keys(global.db.data.users).length;
-    const mode = global.opts?.self ? '𝖯𝗋𝗂𝗏𝖺𝖽𝗈 🔒' : '𝖯𝗎́𝖻𝗅𝗂𝖼𝗈 🌍';
+    const totalreg = Object.keys(global.db.data.users || {}).length;
     const uptime = clockString(process.uptime() * 1000);
-    const tagUsuario = `@${m.sender.split('@')[0]}`;
-    const userName = (await conn.getName?.(m.sender)) || tagUsuario;
 
-    const adText = ["Storm System", "Whois Interface", "Jackson Bot"].getRandom();
-
-    let thumbnailBuffer;
-    try {
-      const response = await axios.get(imgVans, { responseType: 'arraybuffer' });
-      thumbnailBuffer = Buffer.from(response.data);
-    } catch {
-      thumbnailBuffer = Buffer.alloc(0);
+    const categorizedCommands = {};
+    for (const plugin of Object.values(global.plugins)) {
+      if (plugin?.help && !plugin.disabled) {
+        const tags = Array.isArray(plugin.tags) ? plugin.tags : [plugin.tags || 'otros'];
+        const cmds = Array.isArray(plugin.help) ? plugin.help : [plugin.help];
+        const tagName = tags[0];
+        if (!categorizedCommands[tagName]) categorizedCommands[tagName] = [];
+        cmds.forEach(cmd => categorizedCommands[tagName].push(usedPrefix + cmd));
+      }
     }
 
-    const fkontak = {
-      key: { participants: "0@s.whatsapp.net", fromMe: false, id: "Whois" },
-      message: {
-        locationMessage: {
-          name: adText,
-          jpegThumbnail: thumbnailBuffer,
-          vcard: "BEGIN:VCARD\nVERSION:3.0\nN:;Yallico;;;\nFN:Whois\nORG:Bot\nEND:VCARD"
-        }
-      },
-      participant: "0@s.whatsapp.net"
-    };
+    let menu = `${saludo} ${tag} ✨\n\n`;
+    menu += `︵᷼     ⿻ *Storm* ࣪   ࣭ ࣪ *Wa Bot* ࣭  🐈 ࣪\n`;
+    menu += `✿ *Hᴏʟᴀ ${tag}*\n*${saludo}*\n`;
+    menu += `> ꒰꛱ ͜Desarrollado por *Whois Yallico* +51 936 994 155\n`;
+    menu += `𓈒𓏸🌴 *Bot Name:* Storm Bot 🇦🇱\n`;
+    menu += `*𓈒𓏸🌵 *Nivel:* ${level} | *Exp:* ${exp - min}/${xp}\n`;
+    menu += `*𓈒𓏸🌵 *Activo:* ${uptime}\n`;
+    menu += `*𓈒𓏸🍃 *Usuarios:* ${totalreg}\n\n`;
 
-    let categorizedCommands = {};
-    Object.values(global.plugins)
-      .filter(p => p?.help && !p.disabled)
-      .forEach(p => {
-        const tag = Array.isArray(p.tags) ? p.tags[0] : p.tags || 'Otros';
-        const cmds = Array.isArray(p.help) ? p.help : [p.help];
-        categorizedCommands[tag] = categorizedCommands[tag] || new Set();
-        cmds.forEach(cmd => categorizedCommands[tag].add(usedPrefix + cmd));
-      });
-
-    const categoryEmojis = {
-      anime: '🌸', info: '📢', search: '🔍', diversión: '🎢', subbots: '🤖',
-      rpg: '🛹', registro: '📝', sticker: '🎨', imagen: '📸', logo: '🖋️',
-      premium: '🎟️', configuración: '⚙️', descargas: '📥', herramientas: '🔧',
-      nsfw: '🔞', 'base de datos': '📁', audios: '🎧', freefire: '🔫', otros: '🧩'
-    };
-
-    const menuBody = Object.entries(categorizedCommands).map(([title, cmds]) => {
-      const emoji = categoryEmojis[title.toLowerCase()] || '👟';
-      const list = [...cmds].map(cmd => `│  ◦ ${cmd}`).join('\n');
-      return `╭╾━━━━╼ 〔 ${emoji} ${title.toUpperCase()} 〕\n${list}\n╰╾━━━━╼ 〔 🛸 〕`;
-    }).join('\n\n');
-
-    const header = `${borderTop}
-│  👟 *For Three Bot*
-│  👤 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈:* ${userName}
-│  📈 *𝖭𝗂𝗏𝖾𝗅:* ${level}
-│  ✨ *𝖤𝗑𝗉:* ${exp - min}/${xp}
-│  🎫 *𝖳𝗂𝖼𝗄𝖾𝗍𝗌:* ${limit}
-│  ⏳ *𝖴𝗉𝗍𝗂𝗆𝖾:* ${uptime}
-│  👥 *𝖴𝗌𝗎𝖺𝗋𝗂𝗈𝗌:* ${totalUsers}
-${borderBottom}
-`.trim();
-
-    const fullMenu = `${header}\n\n${menuBody}\n\n${menuFooter}`;
+    for (const [category, cmds] of Object.entries(categorizedCommands)) {
+      if (cmds.length > 0) {
+        menu += `*❒ ${category.toUpperCase()}*\n`;
+        menu += cmds.map(cmd => `│ ◦ ${cmd}`).join('\n') + '\n\n';
+      }
+    }
+    
+    menu += `> 😸 Si encuentras un comando con errores repórtalo con el Creador\n`;
 
     await conn.sendMessage(m.chat, {
-      image: { url: imgVans },
-      caption: fullMenu,
+      image: { url: imgMenu },
+      caption: menu,
       mentions: [m.sender]
-    }, { quoted: fkontak });
+    }, { quoted: m });
 
   } catch (e) {
     console.error('❌ Error en el menú:', e);
-    await conn.reply(m.chat, `⚠️ 𝖤𝗋𝗋𝗈𝗋 𝖺𝗅 𝖼𝖺𝗋𝗀𝖺𝗋 𝖾𝗅 𝗆𝖾𝗇𝗎́.`, m);
+    // Si falla la imagen, manda solo texto
+    await conn.reply(m.chat, `⚠️ Error con la imagen. Te mando el menú en texto:\n\n${menu}`, m);
   }
 };
 
+handler.help = ['menu'];
+handler.tags = ['main'];
 handler.command = ['menu', 'help', 'menú'];
 export default handler;
